@@ -1,14 +1,9 @@
 package org.kwstudios.play.bungeelobby.commands;
 
-import net.minecraft.server.v1_8_R3.Vec3D;
-
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import org.kwstudios.play.bungeelobby.loader.PluginLoader;
 
 public class CommandParser {
 
