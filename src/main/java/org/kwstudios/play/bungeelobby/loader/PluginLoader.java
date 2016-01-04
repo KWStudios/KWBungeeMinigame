@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kwstudios.play.bungeelobby.commands.CommandParser;
+import org.kwstudios.play.bungeelobby.listener.MessageListener;
 
 public class PluginLoader extends JavaPlugin {
 
@@ -29,6 +30,9 @@ public class PluginLoader extends JavaPlugin {
 				+ pluginDescriptionFile.getVersion() + ")");
 		// getConfig().options().copyDefaults(true);
 		// saveConfig();
+		
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "kwMiniGame");
+		new MessageListener();
 	}
 
 	@Override
