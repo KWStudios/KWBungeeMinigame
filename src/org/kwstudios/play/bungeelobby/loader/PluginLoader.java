@@ -1,4 +1,4 @@
-package org.kwstudios.play.loader;
+package org.kwstudios.play.bungeelobby.loader;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kwstudios.play.commands.CommandParser;
-import org.kwstudios.play.toolbox.ConfigFactory;
-import org.kwstudios.play.toolbox.MotdListGetter;
+import org.kwstudios.play.bungeelobby.commands.CommandParser;
+import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.bungeelobby.toolbox.MotdListGetter;
 
 public class PluginLoader extends JavaPlugin {
 

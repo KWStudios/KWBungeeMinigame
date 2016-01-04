@@ -1,4 +1,4 @@
-package org.kwstudios.play.loader;
+package org.kwstudios.play.bungeelobby.loader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +21,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
-import org.kwstudios.play.api.PlayerJSON;
-import org.kwstudios.play.api.RequesterThread;
-import org.kwstudios.play.toolbox.ConfigFactory;
-import org.kwstudios.play.toolbox.ConstantHolder;
-import org.kwstudios.play.toolbox.MotdListGetter;
+import org.kwstudios.play.bungeelobby.api.PlayerJSON;
+import org.kwstudios.play.bungeelobby.api.RequesterThread;
+import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.bungeelobby.toolbox.ConstantHolder;
+import org.kwstudios.play.bungeelobby.toolbox.MotdListGetter;
 
 import com.google.gson.Gson;
 
