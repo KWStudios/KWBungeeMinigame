@@ -1,6 +1,6 @@
 name: KWPlugin
-main: org.kwstudios.play.loader.PluginLoader
-version: 0.2.1
+main: org.kwstudios.play.bungeelobby.loader.PluginLoader
+version: 1.0.1
 
 commands:
   setlobby:
