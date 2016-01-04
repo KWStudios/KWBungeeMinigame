@@ -1,10 +1,15 @@
 package org.kwstudios.play.commands;
 
+import net.minecraft.server.v1_8_R3.Vec3D;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import org.kwstudios.play.api.ApiInitializer;
 import org.kwstudios.play.loader.PluginLoader;
 
@@ -30,37 +35,8 @@ public class CommandParser {
 
 	private void checkCommand() {
 		switch (label.toLowerCase()) {
-		case "setlobby":
-			LobbySetter lobbySetter = new LobbySetter(player, command, args, fileConfiguration);
-			lobbySetter.setLobby();
-			player.sendMessage("The Lobby was set " + ChatColor.DARK_AQUA + "successfully!");
-			isCommand = true;
-			break;
-
-		case "lobby":
-			onLobbyCommandIssued();
-			break;
-
-		case "l":
-			onLobbyCommandIssued();
-			break;
-
-		case "spawn":
-			onLobbyCommandIssued();
-			break;
-
-		case "kwlist":
-			new PlayerList(player);
-			break;
-
-		case "kwreload":
-			PluginLoader.getInstance().reloadConfig();
-			PluginLoader.getInstance().setupApiHashMaps();
-			break;
-
-		case "kwinit":
-			Thread thread = new Thread(new Initializer());
-			thread.start();
+		case "hallofreunde:D":
+			player.setVelocity(Vector.getRandom());
 			break;
 
 		default:
