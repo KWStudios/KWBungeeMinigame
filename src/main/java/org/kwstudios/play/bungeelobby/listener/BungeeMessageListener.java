@@ -7,16 +7,16 @@ import org.kwstudios.play.bungeelobby.loader.PluginLoader;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-public class MessageListener implements PluginMessageListener {
+public class BungeeMessageListener implements PluginMessageListener {
 
-	public MessageListener() {
+	public BungeeMessageListener() {
 		PluginLoader.getInstance().getServer().getMessenger().registerIncomingPluginChannel(PluginLoader.getInstance(),
-				"kwLobby", this);
+				"BungeeCord", this);
 	}
 
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		if (channel.equals("kwLobby")){
+		if (channel.equals("BungeeCord")){
 			ByteArrayDataInput in = ByteStreams.newDataInput(message);
 			String subchannel = in.readUTF();
 			if(subchannel.equals("signupdate")){
