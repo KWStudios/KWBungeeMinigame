@@ -19,6 +19,7 @@ import org.kwstudios.play.bungeelobby.toolbox.ConstantHolder;
 public class PluginLoader extends JavaPlugin {
 
 	private static PluginLoader instance = null;
+	private static JedisMessageListener lobbyChannelListener = null;
 	
 	@Override
 	public void onEnable() {
@@ -44,7 +45,12 @@ public class PluginLoader extends JavaPlugin {
 		
 		final String password = ConfigFactory.getString("config", "password", getConfig());
 		
-		new JedisMessageListener(ConstantHolder.JEDIS_SERVER, password, "lobby");
+		PluginLoader.lobbyChannelListener = new JedisMessageListener(ConstantHolder.JEDIS_SERVER, password, "lobby") {
+			@Override
+			public void taskOnMessageReceive(String channel, String message){
+				
+			}
+		};
 		Bukkit.getServer().getScheduler().runTaskLater(this, new Runnable() {
 			
 			@Override
@@ -58,6 +64,10 @@ public class PluginLoader extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		super.onDisable();
+		
+		// Jedis stuff
+		lobbyChannelListener.getJedisPubSub().unsubscribe();
+		
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
 		Logger logger = Logger.getLogger("Minecraft");
 

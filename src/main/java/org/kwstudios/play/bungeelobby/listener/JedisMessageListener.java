@@ -4,20 +4,37 @@ import org.bukkit.Bukkit;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.Protocol;
 
-public class JedisMessageListener {
+public abstract class JedisMessageListener {
 
 	private JedisPubSub jedisPubSub;
 	private String server;
+	private int port;
 	private String password;
 	private String[] channel;
 
-	public JedisMessageListener(String server, String password, String... channel) {
+	public JedisMessageListener(String server, int port, String password, String... channel) {
 		this.server = server;
+		this.port = port;
 		this.password = password;
 		this.channel = channel;
 		jedisPubSub = setupSubscriber();
 	}
+	
+	public JedisMessageListener(String server, String password, String... channel) {
+		this(server, Protocol.DEFAULT_PORT, password, channel);
+	}
+	
+	public JedisMessageListener(String server, String[] channel){
+		this(server, Protocol.DEFAULT_PORT, null, channel);
+	}
+	
+	public JedisMessageListener(String server, int port, String... channel){
+		this(server, port, null, channel);
+	}
+	
+	public abstract void taskOnMessageReceive(String channel, String message);
 
 	private JedisPubSub setupSubscriber() {
 		final JedisPubSub jedisPubSub = new JedisPubSub() {
@@ -48,6 +65,7 @@ public class JedisMessageListener {
 				Bukkit.getConsoleSender().sendMessage("Jedis received a new message from the Redis Host!");
 				Bukkit.getConsoleSender().sendMessage(channel);
 				Bukkit.getConsoleSender().sendMessage(message);
+				taskOnMessageReceive(channel, message);
 			}
 		};
 		new Thread(new Runnable() {
@@ -55,8 +73,10 @@ public class JedisMessageListener {
 			public void run() {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
-					Jedis jedis = new Jedis(server);
-					jedis.auth(password);
+					Jedis jedis = new Jedis(server, port);
+					if (password != null) {
+						jedis.auth(password);
+					}
 					Bukkit.getConsoleSender().sendMessage("Jedis is subscribing for a channel at the Redis Host!");
 					jedis.subscribe(jedisPubSub, channel);
 					jedis.quit();
