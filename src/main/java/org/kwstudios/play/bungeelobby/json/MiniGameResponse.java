@@ -1,11 +1,43 @@
 package org.kwstudios.play.bungeelobby.json;
 
 public class MiniGameResponse {
-	
-	public String SERVER_NAME;
-	public String GAME_TYPE;
-	public String MAP_NAME;
-	
-	public int CURRENT_PLAYERS;
+
+	private String server_name;
+	private String game_type;
+	private String map_name;
+
+	private int current_players;
+
+	public String getServerName() {
+		return server_name;
+	}
+
+	public void setServerName(String serverName) {
+		this.server_name = serverName;
+	}
+
+	public String getGameType() {
+		return game_type;
+	}
+
+	public void setGameType(String gameType) {
+		this.game_type = gameType;
+	}
+
+	public String getMapName() {
+		return map_name;
+	}
+
+	public void setMapName(String mapName) {
+		this.map_name = mapName;
+	}
+
+	public int getCurrentPlayers() {
+		return current_players;
+	}
+
+	public void setCurrentPlayers(int currentPlayers) {
+		this.current_players = currentPlayers;
+	}
 
 }

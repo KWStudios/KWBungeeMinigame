@@ -30,7 +30,7 @@ public abstract class JedisMessageListener {
 		this(server, Protocol.DEFAULT_PORT, null, channel);
 	}
 	
-	public JedisMessageListener(String server, int port, String... channel){
+	public JedisMessageListener(String server, int port, String[] channel){
 		this(server, port, null, channel);
 	}
 	
