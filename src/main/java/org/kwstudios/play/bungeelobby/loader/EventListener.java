@@ -16,16 +16,14 @@ public final class EventListener implements Listener {
 
 	private FileConfiguration fileConfiguration;
 
-	public EventListener(PluginLoader plugin,
-			FileConfiguration fileConfiguration) {
+	public EventListener(PluginLoader plugin, FileConfiguration fileConfiguration) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		this.fileConfiguration = fileConfiguration;
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onRightClick(PlayerInteractEvent event) {
-		if (event.getClickedBlock() != null
-				&& event.getClickedBlock().getState() != null) {
+		if (event.getClickedBlock() != null && event.getClickedBlock().getState() != null) {
 			if (event.getClickedBlock().getState() instanceof Sign) {
 				if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					Sign sign = (Sign) event.getClickedBlock().getState();

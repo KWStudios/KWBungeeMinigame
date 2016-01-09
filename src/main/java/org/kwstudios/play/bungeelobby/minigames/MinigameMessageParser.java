@@ -8,10 +8,11 @@ import com.google.gson.Gson;
 
 public class MinigameMessageParser {
 
+	private String channel;
 	private HashMap<String, MinigameServer> connectedServers = new HashMap<String, MinigameServer>();
 
 	public MinigameMessageParser(String channel) {
-
+		this.channel = channel;
 	}
 
 	public void parseMessage(String message) {
@@ -26,6 +27,10 @@ public class MinigameMessageParser {
 			// the HashMap with signs which requested a server with this
 			// minigame type)
 		}
+	}
+
+	public String getChannel() {
+		return channel;
 	}
 
 }

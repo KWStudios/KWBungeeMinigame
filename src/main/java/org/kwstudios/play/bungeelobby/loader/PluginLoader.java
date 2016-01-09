@@ -15,6 +15,7 @@ import org.kwstudios.play.bungeelobby.commands.CommandParser;
 import org.kwstudios.play.bungeelobby.holders.JedisValues;
 import org.kwstudios.play.bungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.bungeelobby.listener.JedisMessageListener;
+import org.kwstudios.play.bungeelobby.minigames.MinigameMessageParser;
 import org.kwstudios.play.bungeelobby.sender.JedisMessageSender;
 import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
 import org.kwstudios.play.bungeelobby.toolbox.ConstantHolder;
@@ -25,8 +26,10 @@ import redis.clients.jedis.Protocol;
 public class PluginLoader extends JavaPlugin {
 
 	private static PluginLoader instance = null;
+
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
+	private static HashMap<String, MinigameMessageParser> messageParsers = new HashMap<String, MinigameMessageParser>();
 
 	@Override
 	public void onEnable() {
@@ -131,9 +134,19 @@ public class PluginLoader extends JavaPlugin {
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
 			public void taskOnMessageReceive(String channel, String message) {
-
+				if(PluginLoader.getMessageParsers().containsKey(channel)){
+					PluginLoader.getMessageParsers().get(channel).parseMessage(message);
+				} else {
+					MinigameMessageParser parser = new MinigameMessageParser(channel);
+					parser.parseMessage(message);
+					PluginLoader.getMessageParsers().put(channel, parser);
+				}
 			}
 		};
+	}
+
+	public static HashMap<String, MinigameMessageParser> getMessageParsers() {
+		return messageParsers;
 	}
 
 	public static JedisValues getJedisValues() {

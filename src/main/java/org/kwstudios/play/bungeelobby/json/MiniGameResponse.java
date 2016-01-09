@@ -5,6 +5,7 @@ public class MiniGameResponse {
 	private String server_name;
 	private String game_type;
 	private String map_name;
+	private String action;
 
 	private int current_players;
 
@@ -38,6 +39,14 @@ public class MiniGameResponse {
 
 	public void setCurrentPlayers(int currentPlayers) {
 		this.current_players = currentPlayers;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 }
