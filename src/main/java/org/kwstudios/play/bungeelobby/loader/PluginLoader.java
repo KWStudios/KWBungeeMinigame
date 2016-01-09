@@ -15,8 +15,9 @@ import org.kwstudios.play.bungeelobby.commands.CommandParser;
 import org.kwstudios.play.bungeelobby.holders.JedisValues;
 import org.kwstudios.play.bungeelobby.listener.BungeeMessageListener;
 import org.kwstudios.play.bungeelobby.listener.JedisMessageListener;
-import org.kwstudios.play.bungeelobby.minigames.MinigameMessageParser;
+import org.kwstudios.play.bungeelobby.minigames.MinigameServerHolder;
 import org.kwstudios.play.bungeelobby.sender.JedisMessageSender;
+import org.kwstudios.play.bungeelobby.signs.SignConfiguration;
 import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
 import org.kwstudios.play.bungeelobby.toolbox.ConstantHolder;
 import org.kwstudios.play.bungeelobby.toolbox.ValueChecker;
@@ -29,7 +30,7 @@ public class PluginLoader extends JavaPlugin {
 
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
-	private static HashMap<String, MinigameMessageParser> messageParsers = new HashMap<String, MinigameMessageParser>();
+	private static HashMap<String, MinigameServerHolder> messageParsers = new HashMap<String, MinigameServerHolder>();
 
 	@Override
 	public void onEnable() {
@@ -44,8 +45,10 @@ public class PluginLoader extends JavaPlugin {
 
 		logger.info(pluginDescriptionFile.getName() + " was loaded successfully! (Version: "
 				+ pluginDescriptionFile.getVersion() + ")");
-				// getConfig().options().copyDefaults(true);
-				// saveConfig();
+		// getConfig().options().copyDefaults(true);
+		// saveConfig();
+
+		SignConfiguration.initSignConfiguration();
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		// this.getServer().getMessenger().registerOutgoingPluginChannel(this,
@@ -57,6 +60,8 @@ public class PluginLoader extends JavaPlugin {
 		reloadJedisConfig();
 
 		setupJedisListener();
+
+		reloadSignConfig();
 
 		final String password = ConfigFactory.getString("config", "password", getConfig());
 
@@ -134,10 +139,10 @@ public class PluginLoader extends JavaPlugin {
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
 			public void taskOnMessageReceive(String channel, String message) {
-				if(PluginLoader.getMessageParsers().containsKey(channel)){
+				if (PluginLoader.getMessageParsers().containsKey(channel)) {
 					PluginLoader.getMessageParsers().get(channel).parseMessage(message);
 				} else {
-					MinigameMessageParser parser = new MinigameMessageParser(channel);
+					MinigameServerHolder parser = new MinigameServerHolder(channel);
 					parser.parseMessage(message);
 					PluginLoader.getMessageParsers().put(channel, parser);
 				}
@@ -145,7 +150,14 @@ public class PluginLoader extends JavaPlugin {
 		};
 	}
 
-	public static HashMap<String, MinigameMessageParser> getMessageParsers() {
+	private void reloadSignConfig() {
+		ConfigFactory.getValueOrSetDefault("settings.signs", "first-line", "$$", getConfig());
+		ConfigFactory.getValueOrSetDefault("settings.signs", "second-line", "$STATUS$", getConfig());
+		ConfigFactory.getValueOrSetDefault("settings.signs", "third-line", "$MAP_NAME$ $SIZE$", getConfig());
+		ConfigFactory.getValueOrSetDefault("settings.signs", "fourth-line", "$SLOTS$", getConfig());
+	}
+
+	public static HashMap<String, MinigameServerHolder> getMessageParsers() {
 		return messageParsers;
 	}
 

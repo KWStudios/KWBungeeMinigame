@@ -1,17 +1,19 @@
 package org.kwstudios.play.bungeelobby.minigames;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
+import org.bukkit.block.Sign;
 import org.kwstudios.play.bungeelobby.json.MiniGameResponse;
 
 import com.google.gson.Gson;
 
-public class MinigameMessageParser {
+public class MinigameServerHolder {
 
 	private String channel;
 	private HashMap<String, MinigameServer> connectedServers = new HashMap<String, MinigameServer>();
 
-	public MinigameMessageParser(String channel) {
+	public MinigameServerHolder(String channel) {
 		this.channel = channel;
 	}
 
@@ -27,6 +29,15 @@ public class MinigameMessageParser {
 			// the HashMap with signs which requested a server with this
 			// minigame type)
 		}
+	}
+
+	public boolean hasSignActiveServer(Sign sign) {
+		for (Entry<String, MinigameServer> server : connectedServers.entrySet()) {
+			if (server.getValue().getMiniGameSign().equals(sign)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getChannel() {

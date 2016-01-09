@@ -10,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.kwstudios.play.bungeelobby.minigames.GetMaps;
 import org.kwstudios.play.bungeelobby.signs.SignCreator;
 
 public final class EventListener implements Listener {
@@ -48,6 +49,13 @@ public final class EventListener implements Listener {
 		if (event.getPlayer().hasPermission("kwbungee.signs.create")) {
 			if (event.getLine(1).trim().equalsIgnoreCase("[kwbungee]")) {
 				// TODO Create the Data for the Sign.
+				String[] allMaps = GetMaps.getMapNames(PluginLoader.getInstance().getConfig());
+				for (String map : allMaps) {
+					if (event.getLine(2).trim().equalsIgnoreCase(map.trim())) {
+						SignCreator.createNewSign(sign, map);
+						SignCreator.resetSign(event);
+					}
+				}
 			}
 		}
 	}

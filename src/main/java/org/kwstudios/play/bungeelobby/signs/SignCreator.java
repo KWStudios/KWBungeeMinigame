@@ -4,14 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.block.SignChangeEvent;
+import org.kwstudios.play.bungeelobby.loader.PluginLoader;
+import org.kwstudios.play.bungeelobby.minigames.GetMaps;
 import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
 
 public class SignCreator {
 
-	public synchronized static boolean createNewSign(Sign sign, String game) {
-//	TODO Check the way the signs are stored in the SignConfiguration
+	public synchronized static boolean createNewSign(Sign sign, String map) {
+		// TODO Check the way the signs are stored in the SignConfiguration
 		File file = SignConfiguration.getYamlSignsFile();
 		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
 
@@ -29,7 +35,7 @@ public class SignCreator {
 		String world = sign.getWorld().getName();
 		String path = "signs." + Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
 
-		ConfigFactory.setString(path, "game", game, fileConfiguration);
+		ConfigFactory.setString(path, "map", map, fileConfiguration);
 		ConfigFactory.setString(path, "world", world, fileConfiguration);
 		ConfigFactory.setInt(path, "x", x, fileConfiguration);
 		ConfigFactory.setInt(path, "y", y, fileConfiguration);
@@ -68,6 +74,76 @@ public class SignCreator {
 		return false;
 	}
 
+	public static boolean resetSign(SignChangeEvent sign) {
+		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
+
+		int x = sign.getBlock().getState().getX();
+		int y = sign.getBlock().getState().getY();
+		int z = sign.getBlock().getState().getZ();
+		String world = sign.getBlock().getState().getWorld().getName();
+		String path = "signs." + Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
+
+		if (fileConfiguration.contains(path)) {
+			String map = ConfigFactory.getString(path, "map", fileConfiguration);
+
+			String first = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "first-line", PluginLoader.getInstance().getConfig()));
+
+			String second = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()));
+
+			String third = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "third-line", PluginLoader.getInstance().getConfig()));
+
+			String fourth = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()));
+
+			if (!first.isEmpty()) {
+				sign.setLine(0, first);
+			}
+			if (!second.isEmpty()) {
+				sign.setLine(1, second);
+			}
+			if (!third.isEmpty()) {
+				sign.setLine(2, third);
+			}
+			if (!fourth.isEmpty()) {
+				sign.setLine(3, fourth);
+			}
+
+			if (sign.getBlock().getState().update()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static String getLineFormatted(String map, String line) {
+		if (line == null) {
+			return "";
+		}
+		if (line.isEmpty()) {
+			return "";
+		}
+
+		String status = "[" + ChatColor.GREEN + "Lobby" + "]";
+
+		String size = Integer
+				.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+						PluginLoader.getInstance().getConfig()))
+				+ "x" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
+						1, PluginLoader.getInstance().getConfig()));
+
+		String slots = "0/" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+				PluginLoader.getInstance().getConfig())
+				* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
+						PluginLoader.getInstance().getConfig()));
+
+		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME§", map)
+				.replace("$SIZE$", size).replace("$SLOTS$", slots);
+		return ChatColor.translateAlternateColorCodes('&', rawLine);
+	}
 
 	/**
 	 * Checks whether the given Sign is properly configured to be an JoinSign or
@@ -79,9 +155,54 @@ public class SignCreator {
 	 *         instance.
 	 */
 	public static boolean isJoinSign(Sign sign) {
-// TODO Validate sign via its location and a list of sign locations.
+		// TODO Validate sign via its location and a list of sign locations.
+		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
+
+		Location signPosition = sign.getLocation();
+
+		Set<String> signs = ConfigFactory.getKeysUnderPath("signs", false, fileConfiguration);
+		if (signs != null) {
+			for (String signString : signs) {
+				String path = "signs." + signString;
+				String map = ConfigFactory.getString(path, "map", fileConfiguration);
+				for (String mapName : GetMaps.getMapNames(PluginLoader.getInstance().getConfig())) {
+					if (map.trim().equalsIgnoreCase(mapName.trim())) {
+						int x = ConfigFactory.getInt(path, "x", fileConfiguration);
+						int y = ConfigFactory.getInt(path, "y", fileConfiguration);
+						int z = ConfigFactory.getInt(path, "z", fileConfiguration);
+						String world = ConfigFactory.getString(path, "world", fileConfiguration);
+						Location signLocation = new Location(Bukkit.getWorld(world), x, y, z);
+						if (signPosition.getBlockX() == x && signPosition.getBlockY() == y
+								&& signPosition.getBlockZ() == z) {
+							if (signLocation.getBlock().getState() instanceof Sign) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
 
 		return false;
+	}
+
+	public static String getMapFromSign(Sign sign) {
+		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
+
+		int x = sign.getX();
+		int y = sign.getY();
+		int z = sign.getZ();
+		String world = sign.getWorld().getName();
+		String signString = Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
+		String path = "signs." + signString;
+		String map = ConfigFactory.getString(path, "map", fileConfiguration);
+		for (String mapName : GetMaps.getMapNames(PluginLoader.getInstance().getConfig())) {
+			if (map.trim().equalsIgnoreCase(mapName.trim())) {
+				return map;
+			}
+		}
+
+		return "";
 	}
 
 }
