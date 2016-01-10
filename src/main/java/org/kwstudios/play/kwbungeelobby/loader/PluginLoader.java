@@ -30,7 +30,7 @@ public class PluginLoader extends JavaPlugin {
 
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
-	private static HashMap<String, MinigameServerHolder> messageParsers = new HashMap<String, MinigameServerHolder>();
+	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 
 	@Override
 	public void onEnable() {
@@ -138,13 +138,13 @@ public class PluginLoader extends JavaPlugin {
 		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
-			public void taskOnMessageReceive(String channel, String message) {
-				if (PluginLoader.getMessageParsers().containsKey(channel)) {
-					PluginLoader.getMessageParsers().get(channel).parseMessage(message);
+			public synchronized void taskOnMessageReceive(String channel, String message) {
+				if (PluginLoader.getServerHolders().containsKey(channel)) {
+					PluginLoader.getServerHolders().get(channel).parseMessage(message);
 				} else {
 					MinigameServerHolder parser = new MinigameServerHolder(channel);
 					parser.parseMessage(message);
-					PluginLoader.getMessageParsers().put(channel, parser);
+					PluginLoader.getServerHolders().put(channel, parser);
 				}
 			}
 		};
@@ -157,8 +157,8 @@ public class PluginLoader extends JavaPlugin {
 		ConfigFactory.getValueOrSetDefault("settings.signs", "fourth-line", "$SLOTS$", getConfig());
 	}
 
-	public static HashMap<String, MinigameServerHolder> getMessageParsers() {
-		return messageParsers;
+	public static HashMap<String, MinigameServerHolder> getServerHolders() {
+		return serverHolders;
 	}
 
 	public static JedisValues getJedisValues() {

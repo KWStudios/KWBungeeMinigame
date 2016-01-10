@@ -3,6 +3,7 @@ package org.kwstudios.play.kwbungeelobby.minigames;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
 import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
@@ -40,6 +41,24 @@ public class MinigameRequests {
 		if (queuedRequests.containsKey(sign)) {
 			queuedRequests.remove(sign);
 		}
+	}
+
+	public static Sign getQueuedSignForType(MinigameType type) {
+		for (Entry<Sign, MinigameType> request : queuedRequests.entrySet()) {
+			if (request.getValue() == type) {
+				return request.getKey();
+			}
+		}
+		return null;
+	}
+
+	public static boolean isQueuedForRequest(MinigameType type) {
+		for (Entry<Sign, MinigameType> request : queuedRequests.entrySet()) {
+			if (request.getValue() == type) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean isQueuedForRequest(Sign sign) {
