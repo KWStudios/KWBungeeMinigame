@@ -2,7 +2,7 @@ package org.kwstudios.play.kwbungeelobby.minigames;
 
 public enum MinigameAction {
 	
-	UPDATE("update"), REMOVE("remove");
+	CREATE("create"), UPDATE("update"), REMOVE("remove");
 
 	private String text;
 

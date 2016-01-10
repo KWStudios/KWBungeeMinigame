@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
 import org.kwstudios.play.kwbungeelobby.json.MiniGameResponse;
+import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 
 import com.google.gson.Gson;
 
@@ -24,16 +25,27 @@ public class MinigameServerHolder {
 		if (connectedServers.containsKey(miniGameResponse.getServerName())) {
 			// TODO Handle the Sign update and other stuff or remove this server
 			// if it wants to
+			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.REMOVE) {
+				connectedServers.remove(miniGameResponse.getServerName());
+				// TODO Create method to reset the sign
+				SignCreator.removeSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign());
+			} else if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.UPDATE) {
+				SignCreator.updateSign(connectedServers.get(miniGameResponse.getServerName()).getMiniGameSign(),
+						miniGameResponse.getCurrentPlayers());
+			}
 		} else {
 			// TODO Create new MiniGameServer if there is a need for one (Check
 			// the HashMap with signs which requested a server with this
 			// minigame type)
-			Sign miniGameSign = MinigameRequests
-					.getQueuedSignForType(MinigameType.fromString(miniGameResponse.getGameType()));
-			if (miniGameSign != null) {
-				MinigameServer server = new MinigameServer(miniGameResponse, miniGameSign, System.currentTimeMillis());
-				MinigameRequests.removeQueuedRequest(miniGameSign);
-				connectedServers.put(miniGameResponse.getServerName(), server);
+			if (MinigameAction.fromString(miniGameResponse.getAction()) == MinigameAction.CREATE) {
+				Sign miniGameSign = MinigameRequests
+						.getQueuedSignForType(MinigameType.fromString(miniGameResponse.getGameType()));
+				if (miniGameSign != null) {
+					MinigameServer server = new MinigameServer(miniGameResponse, miniGameSign,
+							System.currentTimeMillis());
+					MinigameRequests.removeQueuedRequest(miniGameSign);
+					connectedServers.put(miniGameResponse.getServerName(), server);
+				}
 			}
 		}
 	}

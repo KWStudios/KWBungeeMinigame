@@ -87,16 +87,18 @@ public class SignCreator {
 			String map = ConfigFactory.getString(path, "map", fileConfiguration);
 
 			String first = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "first-line", PluginLoader.getInstance().getConfig()));
+					ConfigFactory.getString("settings.signs", "first-line", PluginLoader.getInstance().getConfig()), 0);
 
 			String second = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()));
+					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()),
+					0);
 
 			String third = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "third-line", PluginLoader.getInstance().getConfig()));
+					ConfigFactory.getString("settings.signs", "third-line", PluginLoader.getInstance().getConfig()), 0);
 
 			String fourth = getLineFormatted(map,
-					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()));
+					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()),
+					0);
 
 			if (!first.isEmpty()) {
 				sign.setLine(0, first);
@@ -119,7 +121,56 @@ public class SignCreator {
 		return false;
 	}
 
-	private static String getLineFormatted(String map, String line) {
+	public static boolean updateSign(Sign sign, int currentPlayers) {
+		FileConfiguration fileConfiguration = SignConfiguration.getSignConfiguration();
+
+		int x = sign.getX();
+		int y = sign.getY();
+		int z = sign.getZ();
+		String world = sign.getWorld().getName();
+		String path = "signs." + Integer.toString(x) + Integer.toString(y) + Integer.toString(z) + world;
+
+		if (fileConfiguration.contains(path)) {
+			String map = ConfigFactory.getString(path, "map", fileConfiguration);
+
+			String first = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "first-line", PluginLoader.getInstance().getConfig()),
+					currentPlayers);
+
+			String second = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "second-line", PluginLoader.getInstance().getConfig()),
+					currentPlayers);
+
+			String third = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "third-line", PluginLoader.getInstance().getConfig()),
+					currentPlayers);
+
+			String fourth = getLineFormatted(map,
+					ConfigFactory.getString("settings.signs", "fourth-line", PluginLoader.getInstance().getConfig()),
+					currentPlayers);
+
+			if (!first.isEmpty()) {
+				sign.setLine(0, first);
+			}
+			if (!second.isEmpty()) {
+				sign.setLine(1, second);
+			}
+			if (!third.isEmpty()) {
+				sign.setLine(2, third);
+			}
+			if (!fourth.isEmpty()) {
+				sign.setLine(3, fourth);
+			}
+
+			if (sign.update()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static String getLineFormatted(String map, String line, int currentPlayers) {
 		if (line == null) {
 			return "";
 		}
@@ -127,20 +178,26 @@ public class SignCreator {
 			return "";
 		}
 
-		String status = "[" + ChatColor.GREEN + "Lobby" + "]";
-
 		String size = Integer
 				.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
 						PluginLoader.getInstance().getConfig()))
 				+ "x" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team",
 						1, PluginLoader.getInstance().getConfig()));
 
-		String slots = "0/" + Integer.toString(ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
+		int maxPlayers = ConfigFactory.getValueOrSetDefault("settings.maps." + map, "teams", 1,
 				PluginLoader.getInstance().getConfig())
 				* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
-						PluginLoader.getInstance().getConfig()));
+						PluginLoader.getInstance().getConfig());
+		String slots = Integer.toString(currentPlayers) + "/" + Integer.toString(maxPlayers);
 
-		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME�", map)
+		String status;
+		if (currentPlayers >= maxPlayers) {
+			status = "[" + ChatColor.GOLD + "Lobby" + "]";
+		} else {
+			status = "[" + ChatColor.GREEN + "Lobby" + "]";
+		}
+
+		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME$", map)
 				.replace("$SIZE$", size).replace("$SLOTS$", slots);
 		return ChatColor.translateAlternateColorCodes('&', rawLine);
 	}
