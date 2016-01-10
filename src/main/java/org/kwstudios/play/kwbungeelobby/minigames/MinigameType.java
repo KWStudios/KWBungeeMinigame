@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.minigames;
+package org.kwstudios.play.kwbungeelobby.minigames;
 
 public enum MinigameType {
 

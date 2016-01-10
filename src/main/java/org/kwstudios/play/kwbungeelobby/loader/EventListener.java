@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.loader;
+package org.kwstudios.play.kwbungeelobby.loader;
 
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,8 +10,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.kwstudios.play.bungeelobby.minigames.GetMaps;
-import org.kwstudios.play.bungeelobby.signs.SignCreator;
+import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
+import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
 
 public final class EventListener implements Listener {
 

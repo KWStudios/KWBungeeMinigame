@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.toolbox;
+package org.kwstudios.play.kwbungeelobby.toolbox;
 
 public class ValueChecker {
 

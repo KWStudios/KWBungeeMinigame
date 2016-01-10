@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.json;
+package org.kwstudios.play.kwbungeelobby.json;
 
 public class MiniGameResponse {
 

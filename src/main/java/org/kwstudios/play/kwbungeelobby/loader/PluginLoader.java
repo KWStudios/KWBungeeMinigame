@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.loader;
+package org.kwstudios.play.kwbungeelobby.loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,16 +11,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kwstudios.play.bungeelobby.commands.CommandParser;
-import org.kwstudios.play.bungeelobby.holders.JedisValues;
-import org.kwstudios.play.bungeelobby.listener.BungeeMessageListener;
-import org.kwstudios.play.bungeelobby.listener.JedisMessageListener;
-import org.kwstudios.play.bungeelobby.minigames.MinigameServerHolder;
-import org.kwstudios.play.bungeelobby.sender.JedisMessageSender;
-import org.kwstudios.play.bungeelobby.signs.SignConfiguration;
-import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
-import org.kwstudios.play.bungeelobby.toolbox.ConstantHolder;
-import org.kwstudios.play.bungeelobby.toolbox.ValueChecker;
+import org.kwstudios.play.kwbungeelobby.commands.CommandParser;
+import org.kwstudios.play.kwbungeelobby.holders.JedisValues;
+import org.kwstudios.play.kwbungeelobby.listener.BungeeMessageListener;
+import org.kwstudios.play.kwbungeelobby.listener.JedisMessageListener;
+import org.kwstudios.play.kwbungeelobby.minigames.MinigameServerHolder;
+import org.kwstudios.play.kwbungeelobby.sender.JedisMessageSender;
+import org.kwstudios.play.kwbungeelobby.signs.SignConfiguration;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConstantHolder;
+import org.kwstudios.play.kwbungeelobby.toolbox.ValueChecker;
 
 import redis.clients.jedis.Protocol;
 

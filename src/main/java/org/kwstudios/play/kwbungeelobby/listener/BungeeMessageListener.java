@@ -1,8 +1,8 @@
-package org.kwstudios.play.bungeelobby.listener;
+package org.kwstudios.play.kwbungeelobby.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.kwstudios.play.bungeelobby.loader.PluginLoader;
+import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;

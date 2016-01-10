@@ -1,10 +1,10 @@
-package org.kwstudios.play.bungeelobby.minigames;
+package org.kwstudios.play.kwbungeelobby.minigames;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
-import org.kwstudios.play.bungeelobby.json.MiniGameResponse;
+import org.kwstudios.play.kwbungeelobby.json.MiniGameResponse;
 
 import com.google.gson.Gson;
 

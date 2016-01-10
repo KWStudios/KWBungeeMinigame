@@ -1,11 +1,11 @@
-package org.kwstudios.play.bungeelobby.signs;
+package org.kwstudios.play.kwbungeelobby.signs;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.kwstudios.play.bungeelobby.loader.PluginLoader;
+import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
 
 public class SignConfiguration {
 

@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.signs;
+package org.kwstudios.play.kwbungeelobby.signs;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
-import org.kwstudios.play.bungeelobby.loader.PluginLoader;
-import org.kwstudios.play.bungeelobby.minigames.GetMaps;
-import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
+import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 
 public class SignCreator {
 
@@ -140,7 +140,7 @@ public class SignCreator {
 				* ConfigFactory.getValueOrSetDefault("settings.maps." + map, "players-per-team", 1,
 						PluginLoader.getInstance().getConfig()));
 
-		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAME§", map)
+		String rawLine = line.replace("$$", "").replace("$STATUS$", status).replace("$MAP_NAMEï¿½", map)
 				.replace("$SIZE$", size).replace("$SLOTS$", slots);
 		return ChatColor.translateAlternateColorCodes('&', rawLine);
 	}

@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.holders;
+package org.kwstudios.play.kwbungeelobby.holders;
 
 public class JedisValues {
 

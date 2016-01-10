@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.sender;
+package org.kwstudios.play.kwbungeelobby.sender;
 
 import org.bukkit.Bukkit;
 

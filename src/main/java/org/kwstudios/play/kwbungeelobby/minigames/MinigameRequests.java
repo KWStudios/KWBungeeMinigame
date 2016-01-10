@@ -1,13 +1,13 @@
-package org.kwstudios.play.bungeelobby.minigames;
+package org.kwstudios.play.kwbungeelobby.minigames;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.block.Sign;
-import org.kwstudios.play.bungeelobby.loader.PluginLoader;
-import org.kwstudios.play.bungeelobby.signs.SignCreator;
-import org.kwstudios.play.bungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
+import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
+import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
 
 public class MinigameRequests {
 

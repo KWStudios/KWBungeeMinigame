@@ -1,4 +1,4 @@
-package org.kwstudios.play.bungeelobby.commands;
+package org.kwstudios.play.kwbungeelobby.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.configuration.file.FileConfiguration;
