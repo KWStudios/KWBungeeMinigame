@@ -59,6 +59,15 @@ public class MinigameServerHolder {
 		return false;
 	}
 
+	public MinigameServer getActiveServerForSign(Sign sign) {
+		for (Entry<String, MinigameServer> server : connectedServers.entrySet()) {
+			if (server.getValue().getMiniGameSign().equals(sign)) {
+				return server.getValue();
+			}
+		}
+		return null;
+	}
+
 	public String getChannel() {
 		return channel;
 	}
