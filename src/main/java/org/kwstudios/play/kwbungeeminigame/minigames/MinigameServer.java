@@ -1,7 +1,7 @@
-package org.kwstudios.play.kwbungeelobby.minigames;
+package org.kwstudios.play.kwbungeeminigame.minigames;
 
 import org.bukkit.block.Sign;
-import org.kwstudios.play.kwbungeelobby.json.MiniGameResponse;
+import org.kwstudios.play.kwbungeeminigame.json.MiniGameResponse;
 
 public class MinigameServer {
 

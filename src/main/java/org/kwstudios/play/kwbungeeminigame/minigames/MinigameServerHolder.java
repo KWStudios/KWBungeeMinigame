@@ -1,14 +1,14 @@
-package org.kwstudios.play.kwbungeelobby.minigames;
+package org.kwstudios.play.kwbungeeminigame.minigames;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.kwstudios.play.kwbungeelobby.json.MiniGameResponse;
-import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
-import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
-import org.kwstudios.play.kwbungeelobby.signs.SignData;
+import org.kwstudios.play.kwbungeeminigame.json.MiniGameResponse;
+import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
+import org.kwstudios.play.kwbungeeminigame.signs.SignCreator;
+import org.kwstudios.play.kwbungeeminigame.signs.SignData;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;

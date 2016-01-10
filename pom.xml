@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kwstudios.play</groupId>
-	<artifactId>kwbungeelobby</artifactId>
+	<artifactId>kwbungeeminigame</artifactId>
 	<version>1.0.1</version>
-	<name>KWBungeeLobby</name>
-	<description>BungeeLobby plugin for Minecraft</description>
+	<name>KWBungeeMinigame</name>
+	<description>BungeeMinigame plugin for Minecraft</description>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -33,7 +33,7 @@
                     <relocations>
                         <relocation>
                             <pattern>redis.clients</pattern>
-                            <shadedPattern>org.kwstudios.play.bungeelobby</shadedPattern>
+                            <shadedPattern>org.kwstudios.play.kwbungeeminigame</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

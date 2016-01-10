@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeelobby.listener;
+package org.kwstudios.play.kwbungeeminigame.listener;
 
 import org.bukkit.Bukkit;
 

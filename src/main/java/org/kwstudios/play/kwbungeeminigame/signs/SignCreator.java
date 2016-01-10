@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeelobby.signs;
+package org.kwstudios.play.kwbungeeminigame.signs;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
-import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
-import org.kwstudios.play.kwbungeelobby.minigames.GetMaps;
-import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
+import org.kwstudios.play.kwbungeeminigame.minigames.GetMaps;
+import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 
 public class SignCreator {
 

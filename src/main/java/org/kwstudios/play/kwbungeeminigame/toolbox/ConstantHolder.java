@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeelobby.toolbox;
+package org.kwstudios.play.kwbungeeminigame.toolbox;
 
 import org.bukkit.ChatColor;
 

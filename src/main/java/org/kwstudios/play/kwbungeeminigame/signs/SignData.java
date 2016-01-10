@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeelobby.signs;
+package org.kwstudios.play.kwbungeeminigame.signs;
 
 import java.util.HashMap;
 

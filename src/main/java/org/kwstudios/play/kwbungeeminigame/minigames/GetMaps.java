@@ -1,7 +1,7 @@
-package org.kwstudios.play.kwbungeelobby.minigames;
+package org.kwstudios.play.kwbungeeminigame.minigames;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 
 public class GetMaps {
 

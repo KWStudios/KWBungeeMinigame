@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeelobby.minigames;
+package org.kwstudios.play.kwbungeeminigame.minigames;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.block.Sign;
-import org.kwstudios.play.kwbungeelobby.loader.PluginLoader;
-import org.kwstudios.play.kwbungeelobby.signs.SignCreator;
-import org.kwstudios.play.kwbungeelobby.toolbox.ConfigFactory;
+import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
+import org.kwstudios.play.kwbungeeminigame.signs.SignCreator;
+import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 
 public class MinigameRequests {
 
