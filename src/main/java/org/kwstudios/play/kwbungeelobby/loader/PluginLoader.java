@@ -51,9 +51,9 @@ public class PluginLoader extends JavaPlugin {
 		SignConfiguration.initSignConfiguration();
 
 		// TODO Use BungeeCord messaging for Player-save actions
-		// this.getServer().getMessenger().registerOutgoingPluginChannel(this,
-		// "BungeeCord");
-		// new BungeeMessageListener();
+		 this.getServer().getMessenger().registerOutgoingPluginChannel(this,
+		 "BungeeCord");
+		 new BungeeMessageListener();
 
 		// Jedis Listener Setup
 

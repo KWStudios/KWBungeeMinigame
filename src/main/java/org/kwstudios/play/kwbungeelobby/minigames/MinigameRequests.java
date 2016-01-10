@@ -14,7 +14,7 @@ public class MinigameRequests {
 
 	private static HashMap<Sign, MinigameType> queuedRequests = new HashMap<Sign, MinigameType>();
 
-	public boolean createRequest(MinigameType type, Sign sign) {
+	public static boolean createRequest(MinigameType type, Sign sign) {
 		if (queuedRequests.containsKey(sign)) {
 			return false;
 		}
