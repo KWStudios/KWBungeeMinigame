@@ -1,7 +1,5 @@
 package org.kwstudios.play.kwbungeeminigame.loader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,12 +13,9 @@ import org.kwstudios.play.kwbungeeminigame.commands.CommandParser;
 import org.kwstudios.play.kwbungeeminigame.holders.JedisValues;
 import org.kwstudios.play.kwbungeeminigame.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeeminigame.listener.JedisMessageListener;
-import org.kwstudios.play.kwbungeeminigame.minigames.MinigameServerHolder;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
-import org.kwstudios.play.kwbungeeminigame.signs.SignConfiguration;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
-import org.kwstudios.play.kwbungeeminigame.toolbox.ValueChecker;
 
 import redis.clients.jedis.Protocol;
 
@@ -30,7 +25,6 @@ public class PluginLoader extends JavaPlugin {
 
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
-	private static HashMap<String, MinigameServerHolder> serverHolders = new HashMap<String, MinigameServerHolder>();
 
 	@Override
 	public void onEnable() {
@@ -47,8 +41,6 @@ public class PluginLoader extends JavaPlugin {
 				+ pluginDescriptionFile.getVersion() + ")");
 		// getConfig().options().copyDefaults(true);
 		// saveConfig();
-
-		SignConfiguration.initSignConfiguration();
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		 this.getServer().getMessenger().registerOutgoingPluginChannel(this,
@@ -139,13 +131,7 @@ public class PluginLoader extends JavaPlugin {
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override
 			public synchronized void taskOnMessageReceive(String channel, String message) {
-				if (PluginLoader.getServerHolders().containsKey(channel)) {
-					PluginLoader.getServerHolders().get(channel).parseMessage(message);
-				} else {
-					MinigameServerHolder parser = new MinigameServerHolder(channel);
-					parser.parseMessage(message);
-					PluginLoader.getServerHolders().put(channel, parser);
-				}
+
 			}
 		};
 	}
@@ -155,10 +141,6 @@ public class PluginLoader extends JavaPlugin {
 		ConfigFactory.getValueOrSetDefault("settings.signs", "second-line", "$STATUS$", getConfig());
 		ConfigFactory.getValueOrSetDefault("settings.signs", "third-line", "$MAP_NAME$ $SIZE$", getConfig());
 		ConfigFactory.getValueOrSetDefault("settings.signs", "fourth-line", "$SLOTS$", getConfig());
-	}
-
-	public static HashMap<String, MinigameServerHolder> getServerHolders() {
-		return serverHolders;
 	}
 
 	public static JedisValues getJedisValues() {

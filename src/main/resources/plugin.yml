@@ -1,5 +1,5 @@
-name: KWBungeeLobby
-main: org.kwstudios.play.kwbungeelobby.loader.PluginLoader
+name: KWBungeeMinigame
+main: org.kwstudios.play.kwbungeeminigame.loader.PluginLoader
 version: 1.0.1
 
 commands:

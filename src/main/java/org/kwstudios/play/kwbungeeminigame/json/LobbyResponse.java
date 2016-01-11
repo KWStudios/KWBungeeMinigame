@@ -1,6 +1,6 @@
 package org.kwstudios.play.kwbungeeminigame.json;
 
-public class MiniGameResponse {
+public class LobbyResponse {
 
 	private String server_name;
 	private String game_type;
