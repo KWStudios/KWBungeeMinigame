@@ -63,7 +63,6 @@ public class PluginLoader extends JavaPlugin {
 			public void run() {
 				JedisMessageSender.sendMessageToChannel(ConstantHolder.JEDIS_SERVER, password, "lobby",
 						"This is the first Jedis Test!!!");
-
 			}
 		}, 100);
 
