@@ -11,11 +11,15 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kwstudios.play.kwbungeeminigame.commands.CommandParser;
 import org.kwstudios.play.kwbungeeminigame.holders.JedisValues;
+import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
+import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeeminigame.listener.JedisMessageListener;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
+
+import com.google.gson.Gson;
 
 import redis.clients.jedis.Protocol;
 
@@ -39,13 +43,12 @@ public class PluginLoader extends JavaPlugin {
 
 		logger.info(pluginDescriptionFile.getName() + " was loaded successfully! (Version: "
 				+ pluginDescriptionFile.getVersion() + ")");
-		// getConfig().options().copyDefaults(true);
-		// saveConfig();
+				// getConfig().options().copyDefaults(true);
+				// saveConfig();
 
 		// TODO Use BungeeCord messaging for Player-save actions
-		 this.getServer().getMessenger().registerOutgoingPluginChannel(this,
-		 "BungeeCord");
-		 new BungeeMessageListener();
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		new BungeeMessageListener();
 
 		// Jedis Listener Setup
 
@@ -53,20 +56,28 @@ public class PluginLoader extends JavaPlugin {
 
 		setupJedisListener();
 
-		reloadSignConfig();
+		saveConfig();
+		
+		final String type = ConfigFactory.getValueOrSetDefault("settings", "minigame-type", "bedwars", getConfig());
+		final String map = ConfigFactory.getValueOrSetDefault("settings", "minigame-map", "Bedwars_1", getConfig());
+		final String server = ConfigFactory.getValueOrSetDefault("settings", "minigame-server", "minigame_1", getConfig());
+		final int players = Bukkit.getOnlinePlayers().size();
 
-		final String password = ConfigFactory.getString("config", "password", getConfig());
-
-		Bukkit.getServer().getScheduler().runTaskLater(this, new Runnable() {
-
+		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				JedisMessageSender.sendMessageToChannel(ConstantHolder.JEDIS_SERVER, password, "lobby",
-						"This is the first Jedis Test!!!");
+				Gson gson = new Gson();
+				LobbyResponse response = new LobbyResponse();
+				response.setAction(MinigameAction.CREATE.getText());
+				response.setCurrentPlayers(players);
+				response.setGameType(type);
+				response.setMapName(map);
+				response.setServerName(server);
+				String message = gson.toJson(response);
+				JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
+						jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
 			}
-		}, 100);
-
-		saveConfig();
+		}, 1);
 	}
 
 	@Override
@@ -133,13 +144,6 @@ public class PluginLoader extends JavaPlugin {
 
 			}
 		};
-	}
-
-	private void reloadSignConfig() {
-		ConfigFactory.getValueOrSetDefault("settings.signs", "first-line", "$$", getConfig());
-		ConfigFactory.getValueOrSetDefault("settings.signs", "second-line", "$STATUS$", getConfig());
-		ConfigFactory.getValueOrSetDefault("settings.signs", "third-line", "$MAP_NAME$ $SIZE$", getConfig());
-		ConfigFactory.getValueOrSetDefault("settings.signs", "fourth-line", "$SLOTS$", getConfig());
 	}
 
 	public static JedisValues getJedisValues() {
