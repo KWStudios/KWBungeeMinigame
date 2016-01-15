@@ -24,7 +24,7 @@ deploy:
   file_glob: true
   bucket: kwstudios-main-bucket
   local-dir: ${HOME}/build/${TRAVIS_REPO_SLUG}/target
-  upload-dir: travis/kwbungeelobby/${TRAVIS_BUILD_NUMBER}
+  upload-dir: travis/kwbungeeminigame/${TRAVIS_BUILD_NUMBER}
   skip_cleanup: true
   acl: public-read
   on:
