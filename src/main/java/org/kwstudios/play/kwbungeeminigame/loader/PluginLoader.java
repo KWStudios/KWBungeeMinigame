@@ -1,5 +1,11 @@
 package org.kwstudios.play.kwbungeeminigame.loader;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,14 +17,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kwstudios.play.kwbungeeminigame.commands.CommandParser;
 import org.kwstudios.play.kwbungeeminigame.holders.JedisValues;
+import org.kwstudios.play.kwbungeeminigame.json.GameValues;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
 import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeeminigame.listener.JedisMessageListener;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
-import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
-
 import com.google.gson.Gson;
 
 import redis.clients.jedis.Protocol;
@@ -29,6 +34,7 @@ public class PluginLoader extends JavaPlugin {
 
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
+	private static GameValues gamevalues = null;
 
 	@Override
 	public void onEnable() {
@@ -43,8 +49,8 @@ public class PluginLoader extends JavaPlugin {
 
 		logger.info(pluginDescriptionFile.getName() + " was loaded successfully! (Version: "
 				+ pluginDescriptionFile.getVersion() + ")");
-				// getConfig().options().copyDefaults(true);
-				// saveConfig();
+		// getConfig().options().copyDefaults(true);
+		// saveConfig();
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -57,11 +63,33 @@ public class PluginLoader extends JavaPlugin {
 		setupJedisListener();
 
 		saveConfig();
-		
-		final String type = ConfigFactory.getValueOrSetDefault("settings", "minigame-type", "bedwars", getConfig());
-		final String map = ConfigFactory.getValueOrSetDefault("settings", "minigame-map", "Bedwars_1", getConfig());
-		final String server = ConfigFactory.getValueOrSetDefault("settings", "minigame-server", "minigame_1", getConfig());
+
+		/*
+		 * final String type = ConfigFactory.getValueOrSetDefault("settings",
+		 * "minigame-type", "bedwars", getConfig()); final String map =
+		 * ConfigFactory.getValueOrSetDefault("settings", "minigame-map",
+		 * "Bedwars_1", getConfig()); final String server =
+		 * ConfigFactory.getValueOrSetDefault("settings", "minigame-server",
+		 * "minigame_1", getConfig());
+		 */
 		final int players = Bukkit.getOnlinePlayers().size();
+
+		File folder = getDataFolder().getParentFile().getParentFile();
+		File file = new File(folder, "GameValues.json");
+		FileInputStream fileInput = null;
+		try {
+			fileInput = new FileInputStream(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new InputStreamReader(fileInput, "UTF8"));
+			Gson gson = new Gson();
+			gamevalues = gson.fromJson(reader, GameValues.class);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override
@@ -70,9 +98,9 @@ public class PluginLoader extends JavaPlugin {
 				LobbyResponse response = new LobbyResponse();
 				response.setAction(MinigameAction.CREATE.getText());
 				response.setCurrentPlayers(players);
-				response.setGameType(type);
-				response.setMapName(map);
-				response.setServerName(server);
+				response.setGameType(gamevalues.getGame_type());
+				response.setMapName(gamevalues.getMap_name());
+				response.setServerName(gamevalues.getServer_name());
 				String message = gson.toJson(response);
 				JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
 						jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
@@ -152,6 +180,10 @@ public class PluginLoader extends JavaPlugin {
 
 	public static PluginLoader getInstance() {
 		return PluginLoader.instance;
+	}
+
+	public static GameValues getGamevalues() {
+		return gamevalues;
 	}
 
 }
