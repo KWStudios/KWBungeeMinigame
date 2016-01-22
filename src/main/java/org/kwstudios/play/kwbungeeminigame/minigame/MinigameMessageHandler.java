@@ -1,6 +1,7 @@
 package org.kwstudios.play.kwbungeeminigame.minigame;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
 import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
@@ -10,10 +11,10 @@ import com.google.gson.Gson;
 
 public class MinigameMessageHandler {
 
-	public static void sendRemoveMessage() {
+	public static BukkitTask sendRemoveMessage() {
 		final int players = Bukkit.getOnlinePlayers().size();
 
-		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
+		return Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				Gson gson = new Gson();
@@ -24,9 +25,15 @@ public class MinigameMessageHandler {
 				response.setMapName(PluginLoader.getGamevalues().getMap_name());
 				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
-				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
+				Thread thread = JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
 						PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
 						PluginLoader.getJedisValues().getChannelToSend(), message);
+				try {
+					thread.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.notifyAll();
 			}
 		});
 	}

@@ -19,9 +19,9 @@ public class JedisMessageSender {
 		JedisMessageSender.sendMessageToChannel(server, port, null, channel, message);
 	}
 
-	public static void sendMessageToChannel(final String server, final int port, final String password,
+	public static Thread sendMessageToChannel(final String server, final int port, final String password,
 			final String channel, final String message) {
-		new Thread(new Runnable() {
+		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -36,8 +36,11 @@ public class JedisMessageSender {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				this.notifyAll();
 			}
-		}).start();
+		});
+		thread.start();
+		return thread;
 	}
 
 }

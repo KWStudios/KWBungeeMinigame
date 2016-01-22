@@ -81,9 +81,9 @@ public final class EventListener implements Listener {
 				response.setMapName(PluginLoader.getGamevalues().getMap_name());
 				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
-				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(), PluginLoader
-						.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(), PluginLoader
-						.getJedisValues().getChannelToSend(), message);
+				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
+						PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
+						PluginLoader.getJedisValues().getChannelToSend(), message);
 			}
 		}, 1);
 
@@ -104,14 +104,25 @@ public final class EventListener implements Listener {
 				Bukkit.getServer().shutdown();
 			} else {
 				System.out.println("starting shutdowncountdown");
-				lobbyShutdown = Bukkit.getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
+				lobbyShutdown = Bukkit.getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(),
+						new Runnable() {
+							@Override
+							public void run() {
+								try {
+									MinigameMessageHandler.sendRemoveMessage().wait();
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(),
+										new Runnable() {
 
-					@Override
-					public void run() {
-						MinigameMessageHandler.sendRemoveMessage();
-						Bukkit.getServer().shutdown();
-					}
-				}, 2400);
+									@Override
+									public void run() {
+										Bukkit.getServer().shutdown();
+									}
+								});
+							}
+						}, 2400);
 			}
 		}
 	}
