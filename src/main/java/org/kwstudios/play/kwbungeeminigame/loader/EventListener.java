@@ -1,8 +1,10 @@
 package org.kwstudios.play.kwbungeeminigame.loader;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,10 +12,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
 import org.kwstudios.play.kwbungeeminigame.json.GameValues;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
 import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
+import org.kwstudios.play.kwbungeeminigame.minigame.EndGame;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
@@ -31,13 +36,15 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		final String type = ConfigFactory.getValueOrSetDefault("settings", "minigame-type", "bedwars", PluginLoader
-				.getInstance().getConfig());
-		final String map = ConfigFactory.getValueOrSetDefault("settings", "minigame-map", "Bedwars_1", PluginLoader
-				.getInstance().getConfig());
-		final String server = ConfigFactory.getValueOrSetDefault("settings", "minigame-server", "minigame_1",
-				PluginLoader.getInstance().getConfig());
 		final int players = Bukkit.getOnlinePlayers().size();
+		
+		List<World> worlds = Bukkit.getWorlds();
+		for(World w : worlds) {
+			if(w.getName().toLowerCase().contains("lobby")) {
+				event.getPlayer().setMetadata(ConstantHolder.TELEPORT_METADATA_KEY, new FixedMetadataValue(PluginLoader.getInstance(), true));
+				event.getPlayer().teleport(w.getSpawnLocation());
+			}
+		}
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
@@ -46,9 +53,9 @@ public final class EventListener implements Listener {
 				LobbyResponse response = new LobbyResponse();
 				response.setAction(MinigameAction.UPDATE.getText());
 				response.setCurrentPlayers(players);
-				response.setGameType(type);
-				response.setMapName(map);
-				response.setServerName(server);
+				response.setGameType(PluginLoader.getGamevalues().getGame_type());
+				response.setMapName(PluginLoader.getGamevalues().getMap_name());
+				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
 				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(), PluginLoader
 						.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(), PluginLoader
@@ -66,15 +73,15 @@ public final class EventListener implements Listener {
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
 		if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
-			if(event.getTo().getWorld().toString().toLowerCase().contains("lobby")) {
+			if (event.getTo().getWorld().toString().toLowerCase().contains("lobby")) {
 				if (GameVariables.playersWith1LobbyTP.contains(event.getPlayer())) {
 					GameVariables.playersWith2LobbyTP.add(event.getPlayer());
 				} else {
 					GameVariables.playersWith1LobbyTP.add(event.getPlayer());
 				}
 				Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
-				if(GameVariables.playersWith2LobbyTP.containsAll(onp)) {
-					
+				if (GameVariables.playersWith2LobbyTP.containsAll(onp)) {
+					EndGame.stopFinishedGame();
 				}
 			}
 		} else {
