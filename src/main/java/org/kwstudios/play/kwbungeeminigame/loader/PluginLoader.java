@@ -93,7 +93,7 @@ public class PluginLoader extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		Bukkit.getServer().createWorld(new WorldCreator(WordUtils.capitalize(gamevalues.getGame_type()) + "_Lobbys"));
+		Bukkit.getServer().createWorld(new WorldCreator(WordUtils.capitalize(gamevalues.getGame_type()) + "_Lobby"));
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override
