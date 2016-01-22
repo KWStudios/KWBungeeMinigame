@@ -36,7 +36,6 @@ public class JedisMessageSender {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				this.notifyAll();
 			}
 		});
 		thread.start();

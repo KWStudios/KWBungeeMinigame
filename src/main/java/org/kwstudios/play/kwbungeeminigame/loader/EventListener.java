@@ -109,7 +109,7 @@ public final class EventListener implements Listener {
 							@Override
 							public void run() {
 								try {
-									MinigameMessageHandler.sendRemoveMessage().wait();
+									MinigameMessageHandler.sendRemoveMessage().join();
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}

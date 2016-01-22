@@ -11,10 +11,11 @@ import com.google.gson.Gson;
 
 public class MinigameMessageHandler {
 
-	public static BukkitTask sendRemoveMessage() {
+	public static Thread sendRemoveMessage() {
 		final int players = Bukkit.getOnlinePlayers().size();
 
-		return Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
+		Thread thread = new Thread(new Runnable() {
+
 			@Override
 			public void run() {
 				Gson gson = new Gson();
@@ -25,17 +26,17 @@ public class MinigameMessageHandler {
 				response.setMapName(PluginLoader.getGamevalues().getMap_name());
 				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
-				Thread thread = JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
+				Thread innerThread = JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
 						PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
 						PluginLoader.getJedisValues().getChannelToSend(), message);
 				try {
-					thread.wait();
+					innerThread.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				this.notifyAll();
 			}
 		});
+		return thread;
 	}
 
 }
