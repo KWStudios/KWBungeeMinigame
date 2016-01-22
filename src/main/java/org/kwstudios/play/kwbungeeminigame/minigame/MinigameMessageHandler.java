@@ -36,6 +36,7 @@ public class MinigameMessageHandler {
 				}
 			}
 		});
+		thread.start();
 		return thread;
 	}
 

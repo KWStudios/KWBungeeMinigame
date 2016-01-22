@@ -144,6 +144,7 @@ public final class EventListener implements Listener {
 					if (!event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
 						GameVariables.isRunning = true;
 						MinigameMessageHandler.sendRemoveMessage();
+						System.out.println("the game has been set running");
 					}
 				}
 			}
