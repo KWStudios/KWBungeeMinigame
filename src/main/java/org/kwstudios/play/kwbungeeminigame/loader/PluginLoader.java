@@ -9,7 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -90,6 +92,8 @@ public class PluginLoader extends JavaPlugin {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+
+		Bukkit.getServer().createWorld(new WorldCreator(WordUtils.capitalize(gamevalues.getGame_type()) + "_Lobbys"));
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override

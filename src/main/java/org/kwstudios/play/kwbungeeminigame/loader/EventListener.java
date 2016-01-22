@@ -37,6 +37,7 @@ public final class EventListener implements Listener {
 	}
 
 	private BukkitTask lobbyShutdown = null;
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final int players = Bukkit.getOnlinePlayers().size();
@@ -50,7 +51,7 @@ public final class EventListener implements Listener {
 			}
 		}
 
-		switch(PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
+		switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
 		case "bedwars":
 			event.getPlayer().performCommand("bw join " + PluginLoader.getGamevalues().getMap_name());
 			break;
@@ -63,11 +64,10 @@ public final class EventListener implements Listener {
 		case "hungergames":
 			event.getPlayer().performCommand("hg join " + PluginLoader.getGamevalues().getMap_name());
 			break;
-		default :
+		default:
 			event.getPlayer().performCommand("kill");
 			break;
 		}
-
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
@@ -85,8 +85,8 @@ public final class EventListener implements Listener {
 						.getJedisValues().getChannelToSend(), message);
 			}
 		}, 1);
-		
-		if(lobbyShutdown != null) {
+
+		if (lobbyShutdown != null) {
 			lobbyShutdown.cancel();
 		}
 	}
@@ -95,17 +95,17 @@ public final class EventListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		GameVariables.playersWith1LobbyTP.remove(event.getPlayer());
 		GameVariables.playersWith2LobbyTP.remove(event.getPlayer());
-		if(Bukkit.getOnlinePlayers().size() <= 1) {
-			if(GameVariables.isRunning) {
+		if (Bukkit.getOnlinePlayers().size() <= 1) {
+			if (GameVariables.isRunning) {
 				MinigameMessageHandler.sendRemoveMessage();
-				Bukkit.getServer().shutdown();	
+				Bukkit.getServer().shutdown();
 			} else {
 				lobbyShutdown = Bukkit.getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
-					
+
 					@Override
 					public void run() {
 						MinigameMessageHandler.sendRemoveMessage();
-						Bukkit.getServer().shutdown();				
+						Bukkit.getServer().shutdown();
 					}
 				}, 2400);
 			}
