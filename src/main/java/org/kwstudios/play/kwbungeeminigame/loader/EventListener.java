@@ -50,6 +50,25 @@ public final class EventListener implements Listener {
 			}
 		}
 
+		switch(PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
+		case "bedwars":
+			event.getPlayer().performCommand("bw join " + PluginLoader.getGamevalues().getMap_name());
+			break;
+		case "ragemode":
+			event.getPlayer().performCommand("rm join " + PluginLoader.getGamevalues().getMap_name());
+			break;
+		case "paintball":
+			event.getPlayer().performCommand("pb join " + PluginLoader.getGamevalues().getMap_name());
+			break;
+		case "hungergames":
+			event.getPlayer().performCommand("hg join " + PluginLoader.getGamevalues().getMap_name());
+			break;
+		default :
+			event.getPlayer().performCommand("kill");
+			break;
+		}
+
+
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -76,7 +95,7 @@ public final class EventListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		GameVariables.playersWith1LobbyTP.remove(event.getPlayer());
 		GameVariables.playersWith2LobbyTP.remove(event.getPlayer());
-		if(Bukkit.getOnlinePlayers().size() < 1) {
+		if(Bukkit.getOnlinePlayers().size() <= 1) {
 			if(GameVariables.isRunning) {
 				MinigameMessageHandler.sendRemoveMessage();
 				Bukkit.getServer().shutdown();	
