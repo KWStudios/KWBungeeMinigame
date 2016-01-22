@@ -2,6 +2,7 @@ package org.kwstudios.play.kwbungeeminigame.loader;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -88,6 +89,7 @@ public final class EventListener implements Listener {
 
 		if (lobbyShutdown != null) {
 			lobbyShutdown.cancel();
+			System.out.println("the shutdown has been canceled");
 		}
 	}
 
@@ -96,10 +98,12 @@ public final class EventListener implements Listener {
 		GameVariables.playersWith1LobbyTP.remove(event.getPlayer());
 		GameVariables.playersWith2LobbyTP.remove(event.getPlayer());
 		if (Bukkit.getOnlinePlayers().size() <= 1) {
+			System.out.println("the server is now empty");
 			if (GameVariables.isRunning) {
-				MinigameMessageHandler.sendRemoveMessage();
+				System.out.println("shuting down instantly");
 				Bukkit.getServer().shutdown();
 			} else {
+				System.out.println("starting shutdowncountdown");
 				lobbyShutdown = Bukkit.getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
 
 					@Override
