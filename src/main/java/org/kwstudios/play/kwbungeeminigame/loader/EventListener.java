@@ -14,11 +14,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
 import org.kwstudios.play.kwbungeeminigame.json.GameValues;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
 import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.minigame.EndGame;
+import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
@@ -34,14 +36,16 @@ public final class EventListener implements Listener {
 		this.fileConfiguration = fileConfiguration;
 	}
 
+	private BukkitTask lobbyShutdown = null;
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final int players = Bukkit.getOnlinePlayers().size();
-		
+
 		List<World> worlds = Bukkit.getWorlds();
-		for(World w : worlds) {
-			if(w.getName().toLowerCase().contains("lobby")) {
-				event.getPlayer().setMetadata(ConstantHolder.TELEPORT_METADATA_KEY, new FixedMetadataValue(PluginLoader.getInstance(), true));
+		for (World w : worlds) {
+			if (w.getName().toLowerCase().contains("lobby")) {
+				event.getPlayer().setMetadata(ConstantHolder.TELEPORT_METADATA_KEY,
+						new FixedMetadataValue(PluginLoader.getInstance(), true));
 				event.getPlayer().teleport(w.getSpawnLocation());
 			}
 		}
@@ -62,18 +66,37 @@ public final class EventListener implements Listener {
 						.getJedisValues().getChannelToSend(), message);
 			}
 		}, 1);
+		
+		if(lobbyShutdown != null) {
+			lobbyShutdown.cancel();
+		}
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		GameVariables.playersWith1LobbyTP.remove(event.getPlayer());
 		GameVariables.playersWith2LobbyTP.remove(event.getPlayer());
+		if(Bukkit.getOnlinePlayers().size() < 1) {
+			if(GameVariables.isRunning) {
+				MinigameMessageHandler.sendRemoveMessage();
+				Bukkit.getServer().shutdown();	
+			} else {
+				lobbyShutdown = Bukkit.getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
+					
+					@Override
+					public void run() {
+						MinigameMessageHandler.sendRemoveMessage();
+						Bukkit.getServer().shutdown();				
+					}
+				}, 2400);
+			}
+		}
 	}
 
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
 		if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
-			if (event.getTo().getWorld().toString().toLowerCase().contains("lobby")) {
+			if (event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
 				if (GameVariables.playersWith1LobbyTP.contains(event.getPlayer())) {
 					GameVariables.playersWith2LobbyTP.add(event.getPlayer());
 				} else {
@@ -82,6 +105,14 @@ public final class EventListener implements Listener {
 				Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
 				if (GameVariables.playersWith2LobbyTP.containsAll(onp)) {
 					EndGame.stopFinishedGame();
+				}
+			}
+			if (!GameVariables.isRunning) {
+				if (event.getFrom().getWorld().getName().toLowerCase().contains("lobby")) {
+					if (!event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
+						GameVariables.isRunning = true;
+						// TODO Remove the server in the lobby
+					}
 				}
 			}
 		} else {

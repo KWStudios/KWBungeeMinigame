@@ -8,4 +8,6 @@ import org.bukkit.entity.Player;
 public class GameVariables {
 	public static final List<Player> playersWith1LobbyTP = new ArrayList<Player>();
 	public static final List<Player> playersWith2LobbyTP = new ArrayList<Player>();
+	
+	public static boolean isRunning = false;
 }
