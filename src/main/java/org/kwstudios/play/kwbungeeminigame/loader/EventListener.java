@@ -38,6 +38,7 @@ public final class EventListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final int players = Bukkit.getOnlinePlayers().size();
 
+		/*
 		List<World> worlds = Bukkit.getWorlds();
 		for (World w : worlds) {
 			if (w.getName().toLowerCase().contains("lobby")) {
@@ -49,6 +50,7 @@ public final class EventListener implements Listener {
 				System.out.println("not matching" + w.getName());
 			}		
 		}
+		*/
 
 		switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
 		case "bedwars":
