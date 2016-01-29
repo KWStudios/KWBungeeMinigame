@@ -78,9 +78,9 @@ public final class EventListener implements Listener {
 				response.setMapName(PluginLoader.getGamevalues().getMap_name());
 				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
-				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
-						PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
-						PluginLoader.getJedisValues().getChannelToSend(), message);
+				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(), PluginLoader
+						.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(), PluginLoader
+						.getJedisValues().getChannelToSend(), message);
 			}
 		}, 1);
 
@@ -92,8 +92,8 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		GameVariables.playersWith1LobbyTP.remove(event.getPlayer());
-		GameVariables.playersWith2LobbyTP.remove(event.getPlayer());
+		GameVariables.playersWithTPOutLobby.remove(event.getPlayer());
+		GameVariables.playersWithTPOutAndInLobby.remove(event.getPlayer());
 		if (Bukkit.getOnlinePlayers().size() <= 1) {
 			System.out.println("the server is now empty");
 			if (GameVariables.isRunning) {
@@ -110,14 +110,14 @@ public final class EventListener implements Listener {
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
-								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(),
-										new Runnable() {
+								Bukkit.getServer().getScheduler()
+										.scheduleSyncDelayedTask(PluginLoader.getInstance(), new Runnable() {
 
-									@Override
-									public void run() {
-										Bukkit.getServer().shutdown();
-									}
-								});
+											@Override
+											public void run() {
+												Bukkit.getServer().shutdown();
+											}
+										});
 							}
 						}, 2400);
 			}
@@ -127,20 +127,25 @@ public final class EventListener implements Listener {
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
 		Bukkit.broadcastMessage("Eventname: " + event.getEventName());
-		Bukkit.broadcastMessage("From: " + event.getFrom().getWorld().getName() + " To: " + event.getTo().getWorld().getName());
+		Bukkit.broadcastMessage("From: " + event.getFrom().getWorld().getName() + " To: "
+				+ event.getTo().getWorld().getName());
 		if (event.getCause() == TeleportCause.PLUGIN) {
 			if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
-				if (event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
-					if (GameVariables.playersWith1LobbyTP.contains(event.getPlayer())) {
-						GameVariables.playersWith2LobbyTP.add(event.getPlayer());
-					} else {
-						GameVariables.playersWith1LobbyTP.add(event.getPlayer());
-					}
-					Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
-					if (GameVariables.playersWith2LobbyTP.containsAll(onp)) {
-						EndGame.stopFinishedGame();
-					}
+				if ((!event.getTo().getWorld().getName().toLowerCase().contains("lobby"))
+						&& event.getFrom().getWorld().getName().toLowerCase().contains("lobby"))
+					GameVariables.playersWithTPOutLobby.add(event.getPlayer());
+
+				if (event.getTo().getWorld().getName().toLowerCase().contains("lobby")
+						&& (!event.getFrom().getWorld().getName().toLowerCase().contains("lobby"))
+						&& GameVariables.playersWithTPOutLobby.contains(event.getPlayer())) {
+					GameVariables.playersWithTPOutAndInLobby.add(event.getPlayer());
 				}
+
+				Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
+				if (GameVariables.playersWithTPOutAndInLobby.containsAll(onp)) {
+					EndGame.stopFinishedGame();
+				}
+
 				if (!GameVariables.isRunning) {
 					if (event.getFrom().getWorld().getName().toLowerCase().contains("lobby")) {
 						if (!event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
