@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -36,7 +37,7 @@ public final class EventListener implements Listener {
 	private BukkitTask lobbyShutdown = null;
 
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPlayerJoin(final PlayerJoinEvent event) {
 		final int players = Bukkit.getOnlinePlayers().size();
 
 		/*
@@ -49,23 +50,36 @@ public final class EventListener implements Listener {
 		 * System.out.println("not matching" + w.getName()); } }
 		 */
 
-		switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
-		case "bedwars":
-			event.getPlayer().performCommand("bw join " + PluginLoader.getGamevalues().getMap_name());
-			break;
-		case "ragemode":
-			event.getPlayer().performCommand("rm join " + PluginLoader.getGamevalues().getMap_name());
-			break;
-		case "paintball":
-			event.getPlayer().performCommand("pb join " + PluginLoader.getGamevalues().getMap_name());
-			break;
-		case "hungergames":
-			event.getPlayer().performCommand("hg join " + PluginLoader.getGamevalues().getMap_name());
-			break;
-		default:
-			event.getPlayer().performCommand("kill");
-			break;
-		}
+		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(), new Runnable() {
+
+					@Override
+					public void run() {
+						switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
+						case "bedwars":
+							event.getPlayer().performCommand("bw join " + PluginLoader.getGamevalues().getMap_name());
+							break;
+						case "ragemode":
+							event.getPlayer().performCommand("rm join " + PluginLoader.getGamevalues().getMap_name());
+							break;
+						case "paintball":
+							event.getPlayer().performCommand("pb join " + PluginLoader.getGamevalues().getMap_name());
+							break;
+						case "hungergames":
+							event.getPlayer().performCommand("hg join " + PluginLoader.getGamevalues().getMap_name());
+							break;
+						default:
+							event.getPlayer().performCommand("kill");
+							break;
+						}
+
+					}
+
+				});
+			}
+		}, 1);
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
