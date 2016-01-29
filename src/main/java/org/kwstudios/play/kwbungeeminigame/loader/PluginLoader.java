@@ -51,8 +51,8 @@ public class PluginLoader extends JavaPlugin {
 
 		logger.info(pluginDescriptionFile.getName() + " was loaded successfully! (Version: "
 				+ pluginDescriptionFile.getVersion() + ")");
-		// getConfig().options().copyDefaults(true);
-		// saveConfig();
+				// getConfig().options().copyDefaults(true);
+				// saveConfig();
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -98,16 +98,21 @@ public class PluginLoader extends JavaPlugin {
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override
 			public void run() {
-				Gson gson = new Gson();
-				LobbyResponse response = new LobbyResponse();
-				response.setAction(MinigameAction.CREATE.getText());
-				response.setCurrentPlayers(players);
-				response.setGameType(gamevalues.getGame_type());
-				response.setMapName(gamevalues.getMap_name());
-				response.setServerName(gamevalues.getServer_name());
-				String message = gson.toJson(response);
-				JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
-						jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						Gson gson = new Gson();
+						LobbyResponse response = new LobbyResponse();
+						response.setAction(MinigameAction.CREATE.getText());
+						response.setCurrentPlayers(players);
+						response.setGameType(gamevalues.getGame_type());
+						response.setMapName(gamevalues.getMap_name());
+						response.setServerName(gamevalues.getServer_name());
+						String message = gson.toJson(response);
+						JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
+								jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
+					}
+				});
 			}
 		}, 1);
 	}
