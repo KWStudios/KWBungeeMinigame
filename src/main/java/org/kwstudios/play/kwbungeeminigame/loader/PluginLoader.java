@@ -31,12 +31,15 @@ import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
 
 import com.google.gson.Gson;
 
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
 public class PluginLoader extends JavaPlugin {
 
 	private static PluginLoader instance = null;
 
+	private static JedisPool jedisPool = null;
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
 	private static GameValues gamevalues = null;
@@ -150,6 +153,7 @@ public class PluginLoader extends JavaPlugin {
 
 		// Jedis stuff
 		lobbyChannelListener.getJedisPubSub().unsubscribe();
+		jedisPool.destroy();
 
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
 		Logger logger = Logger.getLogger("Minecraft");
@@ -198,6 +202,9 @@ public class PluginLoader extends JavaPlugin {
 		String channelToSend = ConfigFactory.getValueOrSetDefault("settings.jedis", "channelToSend", "minigame",
 				getConfig());
 		jedisValues.setChannelToSend(channelToSend);
+		
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
 	}
 
 	private void setupJedisListener() {
@@ -216,6 +223,10 @@ public class PluginLoader extends JavaPlugin {
 
 	public static PluginLoader getInstance() {
 		return PluginLoader.instance;
+	}
+
+	public static JedisPool getJedisPool() {
+		return jedisPool;
 	}
 
 	public static GameValues getGamevalues() {

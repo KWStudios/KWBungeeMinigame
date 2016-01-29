@@ -1,6 +1,7 @@
 package org.kwstudios.play.kwbungeeminigame.listener;
 
 import org.bukkit.Bukkit;
+import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
@@ -22,14 +23,17 @@ public abstract class JedisMessageListener {
 		jedisPubSub = setupSubscriber();
 	}
 	
+	@Deprecated
 	public JedisMessageListener(String server, String password, String... channel) {
 		this(server, Protocol.DEFAULT_PORT, password, channel);
 	}
 	
+	@Deprecated
 	public JedisMessageListener(String server, String[] channel){
 		this(server, Protocol.DEFAULT_PORT, null, channel);
 	}
 	
+	@Deprecated
 	public JedisMessageListener(String server, int port, String[] channel){
 		this(server, port, null, channel);
 	}
@@ -73,7 +77,7 @@ public abstract class JedisMessageListener {
 			public void run() {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
-					Jedis jedis = new Jedis(server, port);
+					Jedis jedis = PluginLoader.getJedisPool().getResource();
 					if (password != null) {
 						jedis.auth(password);
 					}
