@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.commands.CommandParser;
 import org.kwstudios.play.kwbungeeminigame.holders.JedisValues;
 import org.kwstudios.play.kwbungeeminigame.json.GameValues;
@@ -24,8 +25,10 @@ import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
 import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeeminigame.listener.JedisMessageListener;
+import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
+
 import com.google.gson.Gson;
 
 import redis.clients.jedis.Protocol;
@@ -37,6 +40,8 @@ public class PluginLoader extends JavaPlugin {
 	private static JedisMessageListener lobbyChannelListener = null;
 	private static JedisValues jedisValues = new JedisValues();
 	private static GameValues gamevalues = null;
+
+	private static BukkitTask timeoutShutdown = null;
 
 	@Override
 	public void onEnable() {
@@ -111,12 +116,32 @@ public class PluginLoader extends JavaPlugin {
 						String message = gson.toJson(response);
 						JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
 								jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
-						System.out.println("Send Message:\\nHost: " + jedisValues.getHost() + "Port: " + jedisValues.getPort() +
-								"Password: " + jedisValues.getPassword() + "Channel: " + jedisValues.getChannelToSend() + "Message: " + message);
+						System.out.println("Send Message:\\nHost: " + jedisValues.getHost() + "Port: "
+								+ jedisValues.getPort() + "Password: " + jedisValues.getPassword() + "Channel: "
+								+ jedisValues.getChannelToSend() + "Message: " + message);
 					}
 				});
 			}
-		}, 1);
+		}, 20);
+
+		timeoutShutdown = Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(),
+				new Runnable() {
+					@Override
+					public void run() {
+						try {
+							MinigameMessageHandler.sendRemoveMessage().join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(),
+								new Runnable() {
+							@Override
+							public void run() {
+								Bukkit.shutdown();
+							}
+						});
+					}
+				}, 600);
 	}
 
 	@Override
@@ -195,6 +220,10 @@ public class PluginLoader extends JavaPlugin {
 
 	public static GameValues getGamevalues() {
 		return gamevalues;
+	}
+
+	public static BukkitTask getTimeoutShutdown() {
+		return timeoutShutdown;
 	}
 
 }

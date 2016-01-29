@@ -1,19 +1,16 @@
 package org.kwstudios.play.kwbungeeminigame.loader;
 
 import java.util.Collection;
-import java.util.List;
+
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
@@ -38,6 +35,16 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
+
+		if (PluginLoader.getTimeoutShutdown() != null) {
+			PluginLoader.getTimeoutShutdown().cancel();
+		}
+
+		if (lobbyShutdown != null) {
+			lobbyShutdown.cancel();
+			System.out.println("the shutdown has been canceled");
+		}
+
 		final int players = Bukkit.getOnlinePlayers().size();
 
 		/*
@@ -92,16 +99,11 @@ public final class EventListener implements Listener {
 				response.setMapName(PluginLoader.getGamevalues().getMap_name());
 				response.setServerName(PluginLoader.getGamevalues().getServer_name());
 				String message = gson.toJson(response);
-				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(), PluginLoader
-						.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(), PluginLoader
-						.getJedisValues().getChannelToSend(), message);
+				JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
+						PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
+						PluginLoader.getJedisValues().getChannelToSend(), message);
 			}
 		}, 1);
-
-		if (lobbyShutdown != null) {
-			lobbyShutdown.cancel();
-			System.out.println("the shutdown has been canceled");
-		}
 	}
 
 	@EventHandler
@@ -124,14 +126,13 @@ public final class EventListener implements Listener {
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
-								Bukkit.getServer().getScheduler()
-										.scheduleSyncDelayedTask(PluginLoader.getInstance(), new Runnable() {
-
-											@Override
-											public void run() {
-												Bukkit.getServer().shutdown();
-											}
-										});
+								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(),
+										new Runnable() {
+									@Override
+									public void run() {
+										Bukkit.getServer().shutdown();
+									}
+								});
 							}
 						}, 2400);
 			}
@@ -140,9 +141,6 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
-		Bukkit.broadcastMessage("Eventname: " + event.getEventName());
-		Bukkit.broadcastMessage("From: " + event.getFrom().getWorld().getName() + " To: "
-				+ event.getTo().getWorld().getName());
 		if (event.getCause() == TeleportCause.PLUGIN) {
 			if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
 				if ((!event.getTo().getWorld().getName().toLowerCase().contains("lobby"))
