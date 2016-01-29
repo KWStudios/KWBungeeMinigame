@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
@@ -39,18 +40,14 @@ public final class EventListener implements Listener {
 		final int players = Bukkit.getOnlinePlayers().size();
 
 		/*
-		List<World> worlds = Bukkit.getWorlds();
-		for (World w : worlds) {
-			if (w.getName().toLowerCase().contains("lobby")) {
-				event.getPlayer().setMetadata(ConstantHolder.TELEPORT_METADATA_KEY,
-						new FixedMetadataValue(PluginLoader.getInstance(), true));
-				event.getPlayer().teleport(w.getSpawnLocation());
-				System.out.println("teleporting" + w.getName());
-			} else {
-				System.out.println("not matching" + w.getName());
-			}		
-		}
-		*/
+		 * List<World> worlds = Bukkit.getWorlds(); for (World w : worlds) { if
+		 * (w.getName().toLowerCase().contains("lobby")) {
+		 * event.getPlayer().setMetadata(ConstantHolder.TELEPORT_METADATA_KEY,
+		 * new FixedMetadataValue(PluginLoader.getInstance(), true));
+		 * event.getPlayer().teleport(w.getSpawnLocation());
+		 * System.out.println("teleporting" + w.getName()); } else {
+		 * System.out.println("not matching" + w.getName()); } }
+		 */
 
 		switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
 		case "bedwars":
@@ -129,29 +126,33 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
-		if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
-			if (event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
-				if (GameVariables.playersWith1LobbyTP.contains(event.getPlayer())) {
-					GameVariables.playersWith2LobbyTP.add(event.getPlayer());
-				} else {
-					GameVariables.playersWith1LobbyTP.add(event.getPlayer());
-				}
-				Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
-				if (GameVariables.playersWith2LobbyTP.containsAll(onp)) {
-					EndGame.stopFinishedGame();
-				}
-			}
-			if (!GameVariables.isRunning) {
-				if (event.getFrom().getWorld().getName().toLowerCase().contains("lobby")) {
-					if (!event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
-						GameVariables.isRunning = true;
-						MinigameMessageHandler.sendRemoveMessage();
-						System.out.println("the game has been set running");
+		Bukkit.broadcastMessage("Eventname: " + event.getEventName());
+		Bukkit.broadcastMessage("From: " + event.getFrom().getWorld().getName() + " To: " + event.getTo().getWorld().getName());
+		if (event.getCause() == TeleportCause.PLUGIN) {
+			if (!event.getPlayer().hasMetadata(ConstantHolder.TELEPORT_METADATA_KEY)) {
+				if (event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
+					if (GameVariables.playersWith1LobbyTP.contains(event.getPlayer())) {
+						GameVariables.playersWith2LobbyTP.add(event.getPlayer());
+					} else {
+						GameVariables.playersWith1LobbyTP.add(event.getPlayer());
+					}
+					Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
+					if (GameVariables.playersWith2LobbyTP.containsAll(onp)) {
+						EndGame.stopFinishedGame();
 					}
 				}
+				if (!GameVariables.isRunning) {
+					if (event.getFrom().getWorld().getName().toLowerCase().contains("lobby")) {
+						if (!event.getTo().getWorld().getName().toLowerCase().contains("lobby")) {
+							GameVariables.isRunning = true;
+							MinigameMessageHandler.sendRemoveMessage();
+							System.out.println("the game has been set running");
+						}
+					}
+				}
+			} else {
+				event.getPlayer().removeMetadata(ConstantHolder.TELEPORT_METADATA_KEY, PluginLoader.getInstance());
 			}
-		} else {
-			event.getPlayer().removeMetadata(ConstantHolder.TELEPORT_METADATA_KEY, PluginLoader.getInstance());
 		}
 	}
 
