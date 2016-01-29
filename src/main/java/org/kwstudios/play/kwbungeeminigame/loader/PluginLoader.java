@@ -202,9 +202,14 @@ public class PluginLoader extends JavaPlugin {
 		String channelToSend = ConfigFactory.getValueOrSetDefault("settings.jedis", "channelToSend", "minigame",
 				getConfig());
 		jedisValues.setChannelToSend(channelToSend);
-		
+
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
+		if (jedisValues.getPassword() == null || jedisValues.getPassword().isEmpty()) {
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0);
+		} else {
+			jedisPool = new JedisPool(poolConfig, jedisValues.getHost(), jedisValues.getPort(), 0,
+					jedisValues.getPassword());
+		}
 	}
 
 	private void setupJedisListener() {
