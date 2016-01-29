@@ -111,6 +111,8 @@ public class PluginLoader extends JavaPlugin {
 						String message = gson.toJson(response);
 						JedisMessageSender.sendMessageToChannel(jedisValues.getHost(), jedisValues.getPort(),
 								jedisValues.getPassword(), jedisValues.getChannelToSend(), message);
+						System.out.println("Send Message:\\nHost: " + jedisValues.getHost() + "Port: " + jedisValues.getPort() +
+								"Password: " + jedisValues.getPassword() + "Channel: " + jedisValues.getChannelToSend() + "Message: " + message);
 					}
 				});
 			}
