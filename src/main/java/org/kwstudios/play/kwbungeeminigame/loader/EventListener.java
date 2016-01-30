@@ -136,6 +136,24 @@ public final class EventListener implements Listener {
 							}
 						}, 2400);
 			}
+		} else {
+			final int players = Bukkit.getOnlinePlayers().size() - 1;
+			Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					Gson gson = new Gson();
+					LobbyResponse response = new LobbyResponse();
+					response.setAction(MinigameAction.UPDATE.getText());
+					response.setCurrentPlayers(players);
+					response.setGameType(PluginLoader.getGamevalues().getGame_type());
+					response.setMapName(PluginLoader.getGamevalues().getMap_name());
+					response.setServerName(PluginLoader.getGamevalues().getServer_name());
+					String message = gson.toJson(response);
+					JedisMessageSender.sendMessageToChannel(PluginLoader.getJedisValues().getHost(),
+							PluginLoader.getJedisValues().getPort(), PluginLoader.getJedisValues().getPassword(),
+							PluginLoader.getJedisValues().getChannelToSend(), message);
+				}
+			}, 1);
 		}
 	}
 

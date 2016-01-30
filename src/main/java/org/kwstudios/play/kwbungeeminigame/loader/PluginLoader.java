@@ -125,7 +125,7 @@ public class PluginLoader extends JavaPlugin {
 					}
 				});
 			}
-		}, 20);
+		}, 1);
 
 		timeoutShutdown = Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(),
 				new Runnable() {
@@ -144,7 +144,7 @@ public class PluginLoader extends JavaPlugin {
 							}
 						});
 					}
-				}, 600);
+				}, 1200);
 	}
 
 	@Override
