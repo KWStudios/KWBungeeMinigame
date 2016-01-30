@@ -1,6 +1,6 @@
 package org.kwstudios.play.kwbungeeminigame.minigame;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;

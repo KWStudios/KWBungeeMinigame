@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
