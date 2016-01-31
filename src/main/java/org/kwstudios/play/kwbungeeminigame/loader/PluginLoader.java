@@ -15,6 +15,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -101,7 +102,7 @@ public class PluginLoader extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		Bukkit.getServer().createWorld(new WorldCreator(WordUtils.capitalize(gamevalues.getGame_type()) + "_Lobby"));
+		Bukkit.getServer().createWorld(new WorldCreator(gamevalues.getMap_name()));
 
 		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
 			@Override
