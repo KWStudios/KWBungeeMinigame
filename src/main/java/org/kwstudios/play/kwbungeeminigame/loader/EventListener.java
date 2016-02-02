@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -13,14 +14,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
-import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
-import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.minigame.EndGame;
 import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
-import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
-
-import com.google.gson.Gson;
 
 public final class EventListener implements Listener {
 
@@ -162,6 +158,18 @@ public final class EventListener implements Listener {
 				event.getPlayer().removeMetadata(ConstantHolder.TELEPORT_METADATA_KEY, PluginLoader.getInstance());
 			}
 		}
+	}
+
+	// Remove join and quit messages
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onJoinMessage(PlayerJoinEvent event) {
+		event.setJoinMessage("");
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onQuitMessage(PlayerQuitEvent event) {
+		event.setQuitMessage("");
 	}
 
 }
