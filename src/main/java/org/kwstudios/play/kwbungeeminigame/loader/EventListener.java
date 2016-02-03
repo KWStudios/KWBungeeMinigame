@@ -85,6 +85,30 @@ public final class EventListener implements Listener {
 		}, 1);
 
 		MinigameMessageHandler.sendUpdateMessage(players);
+
+		Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						for (Player player : Bukkit.getOnlinePlayers()) {
+							player.hidePlayer(event.getPlayer());
+						}
+
+						Bukkit.getServer().getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
+							@Override
+							public void run() {
+								for (Player player : Bukkit.getOnlinePlayers()) {
+									player.showPlayer(event.getPlayer());
+								}
+							}
+						}, 5);
+					}
+
+				});
+			}
+		}, 5);
 	}
 
 	@EventHandler
