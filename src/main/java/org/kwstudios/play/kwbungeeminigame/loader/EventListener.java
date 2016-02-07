@@ -146,7 +146,9 @@ public final class EventListener implements Listener {
 						}, 2400);
 			}
 		} else {
-			MinigameMessageHandler.sendUpdateMessage(players);
+			if (!GameVariables.isRunning) {
+				MinigameMessageHandler.sendUpdateMessage(players);
+			}
 		}
 	}
 

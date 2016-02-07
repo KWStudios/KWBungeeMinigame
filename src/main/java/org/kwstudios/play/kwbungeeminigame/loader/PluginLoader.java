@@ -9,23 +9,21 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.commands.CommandParser;
+import org.kwstudios.play.kwbungeeminigame.enums.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.holders.JedisValues;
 import org.kwstudios.play.kwbungeeminigame.json.GameValues;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
-import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
-import org.kwstudios.play.kwbungeeminigame.listener.BungeeMessageListener;
 import org.kwstudios.play.kwbungeeminigame.listener.JedisMessageListener;
+import org.kwstudios.play.kwbungeeminigame.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConfigFactory;
@@ -65,7 +63,7 @@ public class PluginLoader extends JavaPlugin {
 
 		// TODO Use BungeeCord messaging for Player-save actions
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-		new BungeeMessageListener();
+		new KWChannelMessageListener();
 
 		// Jedis Listener Setup
 

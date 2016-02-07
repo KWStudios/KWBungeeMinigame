@@ -2,8 +2,8 @@ package org.kwstudios.play.kwbungeeminigame.minigame;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import org.kwstudios.play.kwbungeeminigame.enums.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.json.LobbyResponse;
-import org.kwstudios.play.kwbungeeminigame.json.MinigameAction;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
 import org.kwstudios.play.kwbungeeminigame.sender.JedisMessageSender;
 

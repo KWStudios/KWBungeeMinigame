@@ -1,4 +1,4 @@
-package org.kwstudios.play.kwbungeeminigame.json;
+package org.kwstudios.play.kwbungeeminigame.enums;
 
 public enum MinigameType {
 
