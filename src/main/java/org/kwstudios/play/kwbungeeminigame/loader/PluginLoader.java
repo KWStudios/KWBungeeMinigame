@@ -211,7 +211,7 @@ public class PluginLoader extends JavaPlugin {
 		}
 	}
 
-	private void setupJedisListener() {
+	public void setupJedisListener() {
 		PluginLoader.lobbyChannelListener = new JedisMessageListener(jedisValues.getHost(), jedisValues.getPort(),
 				jedisValues.getPassword(), jedisValues.getChannelsToListen()) {
 			@Override

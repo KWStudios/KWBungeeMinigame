@@ -22,34 +22,36 @@ public abstract class JedisMessageListener {
 		this.channel = channel;
 		jedisPubSub = setupSubscriber();
 	}
-	
+
 	@Deprecated
 	public JedisMessageListener(String server, String password, String... channel) {
 		this(server, Protocol.DEFAULT_PORT, password, channel);
 	}
-	
+
 	@Deprecated
-	public JedisMessageListener(String server, String[] channel){
+	public JedisMessageListener(String server, String[] channel) {
 		this(server, Protocol.DEFAULT_PORT, null, channel);
 	}
-	
+
 	@Deprecated
-	public JedisMessageListener(String server, int port, String[] channel){
+	public JedisMessageListener(String server, int port, String[] channel) {
 		this(server, port, null, channel);
 	}
-	
+
 	public abstract void taskOnMessageReceive(String channel, String message);
 
 	private JedisPubSub setupSubscriber() {
 		final JedisPubSub jedisPubSub = new JedisPubSub() {
 			@Override
 			public void onUnsubscribe(String channel, int subscribedChannels) {
-				Bukkit.getConsoleSender().sendMessage("Jedis unsubscribed successfully from the Redis Host!");
+				Bukkit.getConsoleSender()
+						.sendMessage("Jedis unsubscribed successfully from the Redis Host! Channel: " + channel);
 			}
 
 			@Override
 			public void onSubscribe(String channel, int subscribedChannels) {
-				Bukkit.getConsoleSender().sendMessage("Jedis subscribed successfully at the Redis Host!");
+				Bukkit.getConsoleSender()
+						.sendMessage("Jedis subscribed successfully at the Redis Host! Channel: " + channel);
 			}
 
 			@Override
@@ -72,25 +74,26 @@ public abstract class JedisMessageListener {
 				taskOnMessageReceive(channel, message);
 			}
 		};
-		new Thread(new Runnable() {
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(PluginLoader.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				try {
 					Bukkit.getConsoleSender().sendMessage("Jedis is connecting to the Redis Host!");
 					Jedis jedis = PluginLoader.getJedisPool().getResource();
-//					if (password != null) {
-//						jedis.auth(password);
-//					}
+					/*
+					 * if (password != null) { jedis.auth(password); }
+					 */
 					Bukkit.getConsoleSender().sendMessage("Jedis is subscribing for a channel at the Redis Host!");
 					jedis.subscribe(jedisPubSub, channel);
-//					jedis.quit();
+					// jedis.quit();
 					// jedis.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					PluginLoader.getInstance().setupJedisListener();
 					// e.printStackTrace();
 				}
 			}
-		}).start();
+		});
 		return jedisPubSub;
 	}
 
