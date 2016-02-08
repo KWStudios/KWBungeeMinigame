@@ -14,9 +14,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitTask;
 import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
+import org.kwstudios.play.kwbungeeminigame.json.BungeeRequest;
+import org.kwstudios.play.kwbungeeminigame.json.FriendsRequest;
+import org.kwstudios.play.kwbungeeminigame.listener.KWChannelMessageListener;
 import org.kwstudios.play.kwbungeeminigame.minigame.EndGame;
 import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
+
+import com.google.gson.Gson;
 
 public final class EventListener implements Listener {
 
@@ -31,6 +36,21 @@ public final class EventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
+
+		if (GameVariables.isRunning) {
+			final FriendsRequest friendsRequest = new FriendsRequest(event.getPlayer().getName(), new String[] {},
+					true);
+			final BungeeRequest bungeeRequest = new BungeeRequest(null, friendsRequest, true);
+			Bukkit.getServer().getScheduler().runTaskLater(PluginLoader.getInstance(), new Runnable() {
+
+				@Override
+				public void run() {
+					Gson gson = new Gson();
+					KWChannelMessageListener.sendMessage(gson.toJson(bungeeRequest), event.getPlayer());
+				}
+			}, 1);
+			return;
+		}
 
 		if (PluginLoader.getTimeoutShutdown() != null) {
 			PluginLoader.getTimeoutShutdown().cancel();

@@ -6,15 +6,22 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.kwstudios.play.kwbungeeminigame.enums.BungeeMessageAction;
 import org.kwstudios.play.kwbungeeminigame.json.BungeeRequest;
+import org.kwstudios.play.kwbungeeminigame.json.FriendsRequest;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
+import org.kwstudios.play.kwbungeeminigame.minigame.MinigameSpectator;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class KWChannelMessageListener implements PluginMessageListener {
 
@@ -57,6 +64,36 @@ public class KWChannelMessageListener implements PluginMessageListener {
 
 		for (BungeeMessageAction action : response.getActions()) {
 			if (action == BungeeMessageAction.FRIENDS) {
+				FriendsRequest friendsResponse = response.getFriendsRequest();
+
+				Player player = Bukkit.getPlayerExact(friendsResponse.getPlayer());
+				if (player == null) {
+					return;
+				}
+				if (!player.isOnline()) {
+					return;
+				}
+
+				if (friendsResponse.getFriends() == null || friendsResponse.getFriends().length == 0) {
+					// TODO Fancy message which should explain the situation as
+					// simple as possible
+					player.sendMessage(ChatColor.RED + "You should not be here, sorry...");
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					out.writeUTF("Connect");
+					out.writeUTF("lobby");
+					player.sendPluginMessage(PluginLoader.getInstance(), "BungeeCord", out.toByteArray());
+				} else {
+					for (String friendsName : friendsResponse.getFriends()) {
+						Player friend = Bukkit.getPlayerExact(friendsName);
+						if (friend == null) {
+							continue;
+						}
+						if (friend.isOnline()) {
+							MinigameSpectator.setSpectatorAndTeleport(player, friend.getLocation());
+							return;
+						}
+					}
+				}
 			}
 		}
 	}
