@@ -45,6 +45,7 @@ public final class EventListener implements Listener {
 
 				@Override
 				public void run() {
+					GameVariables.queuedFriendsRequests.add(event.getPlayer());
 					Gson gson = new Gson();
 					KWChannelMessageListener.sendMessage(gson.toJson(bungeeRequest), event.getPlayer());
 				}
@@ -169,6 +170,10 @@ public final class EventListener implements Listener {
 			if (!GameVariables.isRunning) {
 				MinigameMessageHandler.sendUpdateMessage(players);
 			}
+		}
+
+		if (GameVariables.queuedFriendsRequests.contains(event.getPlayer())) {
+			GameVariables.queuedFriendsRequests.remove(event.getPlayer());
 		}
 	}
 

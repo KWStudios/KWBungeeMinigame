@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.kwstudios.play.kwbungeeminigame.enums.BungeeMessageAction;
+import org.kwstudios.play.kwbungeeminigame.holders.GameVariables;
 import org.kwstudios.play.kwbungeeminigame.json.BungeeRequest;
 import org.kwstudios.play.kwbungeeminigame.json.FriendsRequest;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
@@ -73,6 +74,10 @@ public class KWChannelMessageListener implements PluginMessageListener {
 				if (!player.isOnline()) {
 					return;
 				}
+				if (!GameVariables.queuedFriendsRequests.contains(player)) {
+					return;
+				}
+				GameVariables.queuedFriendsRequests.remove(player);
 
 				if (friendsResponse.getFriends() == null || friendsResponse.getFriends().length == 0) {
 					// TODO Fancy message which should explain the situation as
