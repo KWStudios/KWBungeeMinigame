@@ -1,6 +1,6 @@
 name: KWBungeeMinigame
 main: org.kwstudios.play.kwbungeeminigame.loader.PluginLoader
 version: 1.0.1
-loadbefore: [BedwarsRel, RageMode]
+loadbefore: [BedwarsRel, RageMode, Paintball]
 
 commands:
