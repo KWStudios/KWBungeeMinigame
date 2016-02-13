@@ -229,7 +229,7 @@ public final class EventListener implements Listener {
 	public void onCommand(PlayerCommandPreprocessEvent event) {
 		String command = event.getMessage().toLowerCase();
 		if (command.contains("leave")) {
-			event.setMessage("/lobby");
+			event.setMessage(command.split(" ")[0]);
 		}
 	}
 
