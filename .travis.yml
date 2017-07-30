@@ -11,12 +11,13 @@ notifications:
     on_success: change
     on_failure: always
   webhooks: https://api.kwstudios.org/travis/webhooks/versions
+before_install:
+- ./run_buildtools.sh
 before_deploy:
 - ls
 - cd target/
 - ls
 - cd ..
-- ./run_buildtools.sh
 deploy:
   provider: gcs
   access_key_id: GOOGOORZ55TL3TFGHJHZ
