@@ -16,6 +16,7 @@ before_deploy:
 - cd target/
 - ls
 - cd ..
+- ./run_buildtools.sh
 deploy:
   provider: gcs
   access_key_id: GOOGOORZ55TL3TFGHJHZ
