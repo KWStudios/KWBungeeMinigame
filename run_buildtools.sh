@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create tmp directory
 TMP_NAME=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
