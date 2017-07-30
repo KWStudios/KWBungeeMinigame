@@ -1,6 +1,5 @@
 language: java
 jdk:
-- git config --global --unset core.autocrlf
 - oraclejdk8
 script: mvn clean package
 install: true
@@ -13,6 +12,7 @@ notifications:
     on_failure: always
   webhooks: https://api.kwstudios.org/travis/webhooks/versions
 before_install:
+- git config --global --unset core.autocrlf
 - ./run_buildtools.sh
 before_deploy:
 - ls
