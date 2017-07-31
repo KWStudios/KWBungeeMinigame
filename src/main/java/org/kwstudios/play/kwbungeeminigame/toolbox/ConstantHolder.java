@@ -18,5 +18,4 @@ public class ConstantHolder {
 	public static final String TELEPORT_METADATA_KEY = "KWStudios_Teleport";
 
 	public static final String KW_CHANNEL_NAME = "KWBungee";
-
 }
