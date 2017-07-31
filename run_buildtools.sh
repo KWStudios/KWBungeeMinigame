@@ -14,7 +14,7 @@ VERSIONS[0]="1.8.8"
 for i in "${VERSIONS[@]}"
 do
   # Run BuildTools.jar for the version $i
-  java -jar BuildTools.jar --rev `echo $i`
+  java -jar -Xmx1024M -Xms1024M BuildTools.jar --rev `echo $i`
 
   # Delete all files but BuildTools.jar
   TMP_JAR=`tar -c BuildTools.jar | base64`
