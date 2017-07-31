@@ -8,6 +8,9 @@ cd `echo $TMP_NAME`/
 # Download latest BuildTools.jar
 curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar --output BuildTools.jar
 
+# Set up git
+git config --global --unset core.autocrlf
+
 # Run BuildTools for all needed versions
 VERSIONS[0]="1.8.8"
 
