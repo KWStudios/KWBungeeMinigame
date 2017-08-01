@@ -46,5 +46,4 @@ public class JedisMessageSender {
 		thread.start();
 		return thread;
 	}
-
 }
