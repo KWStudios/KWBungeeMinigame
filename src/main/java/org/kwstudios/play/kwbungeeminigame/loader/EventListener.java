@@ -24,6 +24,7 @@ import org.kwstudios.play.kwbungeeminigame.minigame.EndGame;
 import org.kwstudios.play.kwbungeeminigame.minigame.MinigameMessageHandler;
 import org.kwstudios.play.kwbungeeminigame.minigame.MinigameSpectator;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
+import org.kwstudios.play.kwbungeeminigame.toolbox.OnlineNonSpectators;
 import org.kwstudios.play.kwbungeeminigame.toolbox.RandomPlayerGetter;
 
 import com.google.gson.Gson;
@@ -151,9 +152,9 @@ public final class EventListener implements Listener {
 		GameVariables.playersWithTPOutLobby.remove(event.getPlayer());
 		GameVariables.playersWithTPOutAndInLobby.remove(event.getPlayer());
 
-		final int players = Bukkit.getOnlinePlayers().size() - 1;
+		final int players = OnlineNonSpectators.get().size() - 1;
 
-		if (Bukkit.getOnlinePlayers().size() <= 1) {
+		if (players < 1) {
 			System.out.println("the server is now empty");
 			if (GameVariables.isRunning) {
 				MinigameType mt = MinigameType.fromString(PluginLoader.getGamevalues().getGame_type().toLowerCase());
@@ -228,7 +229,7 @@ public final class EventListener implements Listener {
 					GameVariables.playersWithTPOutAndInLobby.add(event.getPlayer());
 				}
 
-				Collection<? extends Player> onp = Bukkit.getOnlinePlayers();
+				Collection<? extends Player> onp = OnlineNonSpectators.get();
 				if (GameVariables.playersWithTPOutAndInLobby.containsAll(onp)) {
 					EndGame.stopFinishedGame();
 				}
