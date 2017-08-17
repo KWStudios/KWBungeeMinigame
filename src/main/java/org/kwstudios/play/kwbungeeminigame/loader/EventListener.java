@@ -94,25 +94,12 @@ public final class EventListener implements Listener {
 						@Override
 						public void run() {
 							MinigameType mt = MinigameType.fromString(PluginLoader.getGamevalues().getGame_type().toLowerCase());
-							
-							switch (PluginLoader.getGamevalues().getGame_type().toLowerCase()) {
-							case "bedwars":
-								event.getPlayer().performCommand(mt.getCommand());
-								break;
-							case "ragemode":
-								event.getPlayer().performCommand(mt.getCommand());
-								break;
-							case "paintball":
-								event.getPlayer().performCommand(mt.getCommand());
-								break;
-							case "hungergames":
-								event.getPlayer().performCommand(mt.getCommand());
-								break;
-							default:
+
+							if(mt.getCommand() != null) {
+							event.getPlayer().performCommand(mt.getCommand());
+							} else {
 								event.getPlayer().performCommand("kill");
-								break;
 							}
-	
 						}
 	
 					});
@@ -159,6 +146,7 @@ public final class EventListener implements Listener {
 			if (GameVariables.isRunning) {
 				MinigameType mt = MinigameType.fromString(PluginLoader.getGamevalues().getGame_type().toLowerCase());
 				if(mt.isInfinite()) {
+					MinigameMessageHandler.sendUpdateMessage(players);
 					System.out.println("starting shutdowncountdown");
 					lobbyShutdown = Bukkit.getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(),
 							new Runnable() {
