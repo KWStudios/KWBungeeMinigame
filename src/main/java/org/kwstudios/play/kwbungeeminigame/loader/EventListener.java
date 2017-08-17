@@ -156,8 +156,31 @@ public final class EventListener implements Listener {
 		if (Bukkit.getOnlinePlayers().size() <= 1) {
 			System.out.println("the server is now empty");
 			if (GameVariables.isRunning) {
-				System.out.println("shuting down instantly");
-				Bukkit.getServer().shutdown();
+				MinigameType mt = MinigameType.fromString(PluginLoader.getGamevalues().getGame_type().toLowerCase());
+				if(mt.isInfinite()) {
+					System.out.println("starting shutdowncountdown");
+					lobbyShutdown = Bukkit.getScheduler().runTaskLaterAsynchronously(PluginLoader.getInstance(),
+							new Runnable() {
+								@Override
+								public void run() {
+									try {
+										MinigameMessageHandler.sendRemoveMessage().join();
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+									Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PluginLoader.getInstance(),
+											new Runnable() {
+										@Override
+										public void run() {
+											Bukkit.getServer().shutdown();
+										}
+									});
+								}
+							}, 2400);
+				} else {
+					System.out.println("shuting down instantly");
+					Bukkit.getServer().shutdown();
+				}
 			} else {
 				MinigameMessageHandler.sendUpdateMessage(players);
 				System.out.println("starting shutdowncountdown");
