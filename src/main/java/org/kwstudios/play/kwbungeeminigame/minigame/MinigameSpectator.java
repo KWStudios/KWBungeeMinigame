@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.kwstudios.play.kwbungeeminigame.enums.MinigameType;
 import org.kwstudios.play.kwbungeeminigame.loader.PluginLoader;
 import org.kwstudios.play.kwbungeeminigame.toolbox.ConstantHolder;
 
@@ -15,5 +16,8 @@ public class MinigameSpectator {
 		player.setGameMode(GameMode.SPECTATOR);
 		player.teleport(location);
 	}
-
+	
+	public static void joinRunning(Player player) {
+		player.performCommand(MinigameType.fromString((PluginLoader.getGamevalues().getGame_type().toLowerCase())).getCommand());
+	}
 }
